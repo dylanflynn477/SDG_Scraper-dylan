@@ -5,10 +5,18 @@ import pandas_datareader as pdr
 import pandas as pd
 
 csvfile = pd.read_csv("journals.csv")
+input = open("journals.csv", "rb")
+output = open("journals.csv", "wb")
+
 for i in range(len(csvfile)):
     new_url = str(csvfile.iat[i,0]).replace(" ", "%20")
-    
+    writeoutput = csv.writer(output)
+    for row in input:
+        row[1] = new_url
+        writeoutput.writerow(row)
     print(new_url)
+input.close()
+output.close()
 
 def url(journal):
     return "https://sju.primo.exlibrisgroup.com/discovery/search?query=any,contains," + journal + "&tab=Everything&search_scope=MyInst_and_CI&vid=01USCIPH_INST:SJU&offset=0"
