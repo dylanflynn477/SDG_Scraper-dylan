@@ -10,8 +10,9 @@ output = open("journals.csv", "wb")
 
 for i in range(len(csvfile)):
     new_url = str(csvfile.iat[i,0]).replace(" ", "%20")
+    readinput = csv.reader(input)
     writeoutput = csv.writer(output)
-    for row in input:
+    for row in readinput:
         row[1] = new_url
         writeoutput.writerow(row)
     print(new_url)
