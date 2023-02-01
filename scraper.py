@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import csv
 import pandas_datareader as pdr
 import pandas as pd
+from requests_html import HTMLSession
 
 csvfile = pd.read_csv("journals.csv")
 input = open("journals.csv", "rb")
@@ -24,9 +25,13 @@ def url(journal):
     return str("https://sju.primo.exlibrisgroup.com/discovery/search?query=any,contains," + journal + "&tab=Everything&search_scope=MyInst_and_CI&vid=01USCIPH_INST:SJU&offset=0")
 #for i in range(len(new_query_list)):
 #    url(new_query_list[i])
-page = requests.get(url(new_query_list[1]))   
-request = BeautifulSoup(page.content, "html.parser") 
-print(request)
+#page = requests.get(url(new_query_list[1]))   
+#request = BeautifulSoup(page.content, "xml") 
+#print(request)
+
+session = HTMLSession()
+r = session.get(url(new_query_list[1]))
+r.html.render()
 
 #for i in range(len(csvfile)):
     #page = requests.get(url(csvfile.iat[i,0]))
