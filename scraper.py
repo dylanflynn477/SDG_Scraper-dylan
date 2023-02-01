@@ -6,22 +6,27 @@ import pandas as pd
 
 csvfile = pd.read_csv("journals.csv")
 input = open("journals.csv", "rb")
-output = open("journals.csv", "wb")
+
+global new_query_list
+global new_journal_list
+global query_results
+new_query_list = []
+new_journal_list = []
+query_results = []
 
 for i in range(len(csvfile)):
     new_url = str(csvfile.iat[i,0]).replace(" ", "%20")
-    readinput = csv.reader(input)
-    writeoutput = csv.writer(output)
-    for row in readinput:
-        row[1] = new_url
-        writeoutput.writerow(row)
-    print(new_url)
-input.close()
-output.close()
+    new_query_list.append(new_url)
+    new_journal_list.append(str(csvfile.iat[i,0]))
 
+df = {'Journals': new_journal_list, 'Queries': new_query_list}
 def url(journal):
-    return "https://sju.primo.exlibrisgroup.com/discovery/search?query=any,contains," + journal + "&tab=Everything&search_scope=MyInst_and_CI&vid=01USCIPH_INST:SJU&offset=0"
-
+    return str("https://sju.primo.exlibrisgroup.com/discovery/search?query=any,contains," + journal + "&tab=Everything&search_scope=MyInst_and_CI&vid=01USCIPH_INST:SJU&offset=0")
+#for i in range(len(new_query_list)):
+#    url(new_query_list[i])
+page = requests.get(url(new_query_list[1]))   
+request = BeautifulSoup(page.content, "html.parser") 
+print(request)
 
 #for i in range(len(csvfile)):
     #page = requests.get(url(csvfile.iat[i,0]))
