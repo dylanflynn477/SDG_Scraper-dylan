@@ -26,7 +26,7 @@ def url(journal):
 #for i in range(len(new_query_list)):
 #    url(new_query_list[i])
 page = requests.get(url(new_query_list[1]))
-#page = requests.get(url("https://sites.sju.edu/library/"))    
+#page = requests.get("https://sites.sju.edu/library/")  
 request = BeautifulSoup(page.content, "xml") 
 print(request)
 
