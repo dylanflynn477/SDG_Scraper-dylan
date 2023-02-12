@@ -25,15 +25,20 @@ def url(journal):
     return str("https://sju.primo.exlibrisgroup.com/discovery/search?query=any,contains," + journal + "&tab=Everything&search_scope=MyInst_and_CI&vid=01USCIPH_INST:SJU&offset=0")
 #for i in range(len(new_query_list)):
 #    url(new_query_list[i])
-page = requests.get(url(new_query_list[1]))
+#page = requests.get(url(new_query_list[1]))
 #page = requests.get("https://sites.sju.edu/library/")  
-request = BeautifulSoup(page.content, "xml") 
-print(request)
+#request = BeautifulSoup(page.content, "xml") 
+#print(request)
 
-#session = HTMLSession()
-#r = session.get(url(new_query_list[1]))
-#r.html.render()
+session = HTMLSession()
+r = session.get(url(new_query_list[1]))
+r.html.render(sleep=1, keep_page=True, scrolldown=1)
 
+top_result = r.html.find('<mark>')
+print(top_result)
+
+#with open("scraper.png","wb") as fp:
+#    fp.write(r.html.render())
 #for i in range(len(csvfile)):
     #page = requests.get(url(csvfile.iat[i,0]))
     #request = BeautifulSoup(page.content, "html.parser")
