@@ -6,7 +6,6 @@ import pandas as pd
 from requests_html import HTMLSession
 
 csvfile = pd.read_csv("journals.csv")
-input = open("journals.csv", "rb")
 
 global new_query_list
 global new_journal_list
@@ -31,12 +30,25 @@ def url(journal):
 #print(request)
 
 session = HTMLSession()
-r = session.get(url(new_query_list[1]))
-r.html.render(sleep=1, keep_page=True, scrolldown=1)
+#print(url(new_query_list[1]))
 
-top_result = r.html.find('<mark>')
-print(top_result)
-
+for i in range(len(csvfile)):
+    r = session.get(url(new_query_list[i]))
+    r.html.render(sleep=1, keep_page=False, scrolldown=1)
+    try:
+        top_result = r.html.find('mark'),#containing=str(csvfile.iat[0,0]))
+        print(top_result)
+        print(top_result[0][0])
+        print(top_result[0][0].text)
+        df['Queries'][i] = top_result[0][0].text
+        #print(r.content)
+    except IndexError:
+        print(f"Journal {csvfile.iat[i,0]} not found")
+    except AttributeError:
+        print("AttributeError")
+    except KeyboardInterrupt:
+        print(df)
+        quit()
 #with open("scraper.png","wb") as fp:
 #    fp.write(r.html.render())
 #for i in range(len(csvfile)):
