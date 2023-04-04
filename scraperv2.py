@@ -50,13 +50,19 @@ for i in range(len(csvfile)):
     #if str(journal_issn_list[i]) == "nan":
     #    if str(journal_eissn_list[i]) == "nan":
     #        pass
+    global query_loop_results
+    query_loop_results = []
     url = 'https://sju.primo.exlibrisgroup.com/discovery/search?query=issn,contains,' + str(journal_issn_list[i]) + ',AND&tab=Everything&search_scope=MyInst_and_CI&vid=01USCIPH_INST:SJU&mode=advanced&offset=0'
     journal = journal_list[i]
     if query_journal(url) == 0:
         url = 'https://sju.primo.exlibrisgroup.com/discovery/search?query=issn,contains,' + str(journal_eissn_list[i]) + ',AND&tab=Everything&search_scope=MyInst_and_CI&vid=01USCIPH_INST:SJU&mode=advanced&offset=0'
         if query_journal(url) == 0:
-            query_results.append("No")
+            query_loop_results.append("No")
         else:
-            query_results.append("Yes")
+            query_loop_results.append("Yes")
     else:
-        query_results.append("Yes")
+        query_loop_results.append("Yes")
+
+d = {'Journal' : journal_list, 'Journal Exists' : query_loop_results}
+df = pd.DataFrame(data=d)
+print(df)
