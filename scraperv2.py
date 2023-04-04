@@ -46,6 +46,7 @@ def query_journal(url):
             return 1
 
 for i in range(len(csvfile)):
+    #I want to add a way to pass through empty spots.
     #if str(journal_issn_list[i]) == "nan":
     #    if str(journal_eissn_list[i]) == "nan":
     #        pass
