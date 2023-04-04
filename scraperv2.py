@@ -3,6 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 import pandas as pd
+from selenium.webdriver.common.action_chains import ActionChains as action
 
 # Declaring global variables
 global url
@@ -27,7 +28,7 @@ for i in range(len(csvfile)):
     journal_issn_list.append(csvfile.iat[i,1])
     journal_eissn_list.append(csvfile.iat[i,2])
 #print(journal_list)
-
+url = 'https://sju.primo.exlibrisgroup.com/discovery/search?query=issn,contains,' + '2168-1007' + ',AND&tab=Everything&search_scope=MyInst_and_CI&vid=01USCIPH_INST:SJU&mode=advanced&offset=0'
 options = webdriver.ChromeOptions()
 options.add_argument("--headless=new")
 def query_journal(url):
@@ -37,32 +38,38 @@ def query_journal(url):
         print("Page Title:", driver.title)
         #elements = driver.find_elements(By.TAG_NAME, 'prm-brief-result')
         elements = driver.find_elements(By.TAG_NAME, 'prm-brief-result-container')
-        print(f"Results: {elements}")
+        information = action(driver).move_to_element(elements[0]).click(elements[0]).perform()
+        #driver.get(information)
+        #print(driver.current_url)
+        #print(driver.title)
+        #print(f"Results: {elements}")
         if elements == []:
             print(f"Journal {journal} not found.")
             return 0
         else:
             print(f"Journal {journal} successfully found.")
             return 1
+query_journal(url)
 
-for i in range(len(csvfile)):
-    #I want to add a way to pass through empty spots.
-    #if str(journal_issn_list[i]) == "nan":
-    #    if str(journal_eissn_list[i]) == "nan":
-    #        pass
-    global query_loop_results
-    query_loop_results = []
-    url = 'https://sju.primo.exlibrisgroup.com/discovery/search?query=issn,contains,' + str(journal_issn_list[i]) + ',AND&tab=Everything&search_scope=MyInst_and_CI&vid=01USCIPH_INST:SJU&mode=advanced&offset=0'
-    journal = journal_list[i]
-    if query_journal(url) == 0:
-        url = 'https://sju.primo.exlibrisgroup.com/discovery/search?query=issn,contains,' + str(journal_eissn_list[i]) + ',AND&tab=Everything&search_scope=MyInst_and_CI&vid=01USCIPH_INST:SJU&mode=advanced&offset=0'
+def find_all():
+    for i in range(len(csvfile)):
+        #I want to add a way to pass through empty spots.
+        #if str(journal_issn_list[i]) == "nan":
+        #    if str(journal_eissn_list[i]) == "nan":
+        #        pass
+        global query_loop_results
+        query_loop_results = []
+        url = 'https://sju.primo.exlibrisgroup.com/discovery/search?query=issn,contains,' + str(journal_issn_list[i]) + ',AND&tab=Everything&search_scope=MyInst_and_CI&vid=01USCIPH_INST:SJU&mode=advanced&offset=0'
+        journal = journal_list[i]
         if query_journal(url) == 0:
-            query_loop_results.append("No")
+            url = 'https://sju.primo.exlibrisgroup.com/discovery/search?query=issn,contains,' + str(journal_eissn_list[i]) + ',AND&tab=Everything&search_scope=MyInst_and_CI&vid=01USCIPH_INST:SJU&mode=advanced&offset=0'
+            if query_journal(url) == 0:
+                query_loop_results.append("No")
+            else:
+                query_loop_results.append("Yes")
         else:
             query_loop_results.append("Yes")
-    else:
-        query_loop_results.append("Yes")
 
-d = {'Journal' : journal_list, 'Journal Exists' : query_loop_results}
-df = pd.DataFrame(data=d)
-print(df)
+    d = {'Journal' : journal_list, 'Journal Exists' : query_loop_results}
+    df = pd.DataFrame(data=d)
+    print(df)
