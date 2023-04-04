@@ -40,7 +40,7 @@ def query_journal(url):
         elements = driver.find_elements(By.TAG_NAME, 'prm-brief-result-container')
         information = action(driver).move_to_element(elements[0]).click(elements[0]).perform()
         #driver.get(information)
-        #print(driver.current_url)
+        print(driver.current_url)
         #print(driver.title)
         #print(f"Results: {elements}")
         if elements == []:
