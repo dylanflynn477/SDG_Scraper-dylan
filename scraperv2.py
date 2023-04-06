@@ -28,7 +28,10 @@ for i in range(len(csvfile)):
     journal_issn_list.append(csvfile.iat[i,1])
     journal_eissn_list.append(csvfile.iat[i,2])
 #print(journal_list)
-url = 'https://sju.primo.exlibrisgroup.com/discovery/search?query=issn,contains,' + '2168-1007' + ',AND&tab=Everything&search_scope=MyInst_and_CI&vid=01USCIPH_INST:SJU&mode=advanced&offset=0'
+test = '1938-9590'
+url = 'https://sju.primo.exlibrisgroup.com/discovery/search?query=issn,contains,' + test + ',AND&tab=Everything&search_scope=MyInst_and_CI&vid=01USCIPH_INST:SJU&mode=advanced&offset=0'
+#url = 'https://sju.primo.exlibrisgroup.com/discovery/search?query=issn,contains,2168-1007,AND&tab=Everything&search_scope=MyInst_and_CI&vid=01USCIPH_INST:SJU&mode=advanced&offset=0'
+
 options = webdriver.ChromeOptions()
 options.add_argument("--headless=new")
 def query_journal(url):
@@ -38,11 +41,17 @@ def query_journal(url):
         print("Page Title:", driver.title)
         #elements = driver.find_elements(By.TAG_NAME, 'prm-brief-result')
         elements = driver.find_elements(By.TAG_NAME, 'prm-brief-result-container')
-        information = action(driver).move_to_element(elements[0]).click(elements[0]).perform()
+        highlighted_text = driver.find_elements(By.TAG_NAME, 'span')
+        information = action(driver).move_to_element(highlighted_text[256]).click(highlighted_text[256]).perform()
         #driver.get(information)
         print(driver.current_url)
         #print(driver.title)
-        #print(f"Results: {elements}")
+        print(f"Results: {highlighted_text}")
+        #for i in range(len(highlighted_text)):
+        #    if highlighted_text[i].text == "Academy of Management discoveries.":
+        #        print(i)
+            #print(highlighted_text[i].text)
+        print(highlighted_text[256].text)
         if elements == []:
             print(f"Journal {journal} not found.")
             return 0
