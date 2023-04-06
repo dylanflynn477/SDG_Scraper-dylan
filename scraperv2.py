@@ -13,6 +13,8 @@ global journal_issn_list
 global journal_eissn_list
 global journal
 global query_results
+global abstract
+global keywords
 global csvfile
 
 csvfile = pd.read_csv('scopusjournals.csv')
