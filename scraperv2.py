@@ -40,24 +40,26 @@ def query_journal(url):
         print("Page URL:", driver.current_url)
         print("Page Title:", driver.title)
         #elements = driver.find_elements(By.TAG_NAME, 'prm-brief-result')
-        elements = driver.find_elements(By.TAG_NAME, 'prm-brief-result-container')
+        #elements = driver.find_elements(By.TAG_NAME, 'prm-brief-result-container')
         highlighted_text = driver.find_elements(By.TAG_NAME, 'span')
-        information = action(driver).move_to_element(highlighted_text[256]).click(highlighted_text[256]).perform()
+        print(highlighted_text[258].text)
+        information = action(driver).move_to_element(highlighted_text[258]).double_click(highlighted_text[258]).perform()
+        #information = action(driver).move_to_element(highlighted_text[258]).click(highlighted_text[258]).perform()
         #driver.get(information)
         print(driver.current_url)
         #print(driver.title)
-        print(f"Results: {highlighted_text}")
+        #print(f"Results: {highlighted_text}")
         #for i in range(len(highlighted_text)):
         #    if highlighted_text[i].text == "Academy of Management discoveries.":
         #        print(i)
             #print(highlighted_text[i].text)
-        print(highlighted_text[256].text)
-        if elements == []:
-            print(f"Journal {journal} not found.")
-            return 0
-        else:
-            print(f"Journal {journal} successfully found.")
-            return 1
+        #print(highlighted_text[256].text)
+        #if elements == []:
+        #    print(f"Journal {journal} not found.")
+        #    return 0
+        #else:
+        #    print(f"Journal {journal} successfully found.")
+        #    return 1
 query_journal(url)
 
 def find_all():
