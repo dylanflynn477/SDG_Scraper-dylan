@@ -32,6 +32,8 @@ test = '1938-9590'
 url = 'https://sju.primo.exlibrisgroup.com/discovery/search?query=issn,contains,' + test + ',AND&tab=Everything&search_scope=MyInst_and_CI&vid=01USCIPH_INST:SJU&mode=advanced&offset=0'
 #url = 'https://sju.primo.exlibrisgroup.com/discovery/search?query=issn,contains,2168-1007,AND&tab=Everything&search_scope=MyInst_and_CI&vid=01USCIPH_INST:SJU&mode=advanced&offset=0'
 
+## 256 and 258 are the numbers that work when running a query. I don't know why that is, but they do.
+
 options = webdriver.ChromeOptions()
 options.add_argument("--headless=new")
 def query_journal(url):
