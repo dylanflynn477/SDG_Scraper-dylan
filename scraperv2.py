@@ -64,22 +64,28 @@ query_journal(url)
 
 def find_all():
     for i in range(len(csvfile)):
-        #I want to add a way to pass through empty spots.
-        #if str(journal_issn_list[i]) == "nan":
-        #    if str(journal_eissn_list[i]) == "nan":
-        #        pass
-        global query_loop_results
-        query_loop_results = []
-        url = 'https://sju.primo.exlibrisgroup.com/discovery/search?query=issn,contains,' + str(journal_issn_list[i]) + ',AND&tab=Everything&search_scope=MyInst_and_CI&vid=01USCIPH_INST:SJU&mode=advanced&offset=0'
-        journal = journal_list[i]
-        if query_journal(url) == 0:
-            url = 'https://sju.primo.exlibrisgroup.com/discovery/search?query=issn,contains,' + str(journal_eissn_list[i]) + ',AND&tab=Everything&search_scope=MyInst_and_CI&vid=01USCIPH_INST:SJU&mode=advanced&offset=0'
+        try:
+            #I want to add a way to pass through empty spots.
+            #if str(journal_issn_list[i]) == "nan":
+            #    if str(journal_eissn_list[i]) == "nan":
+            #        pass
+            global query_loop_results
+            query_loop_results = []
+            url = 'https://sju.primo.exlibrisgroup.com/discovery/search?query=issn,contains,' + str(journal_issn_list[i]) + ',AND&tab=Everything&search_scope=MyInst_and_CI&vid=01USCIPH_INST:SJU&mode=advanced&offset=0'
+            journal = journal_list[i]
             if query_journal(url) == 0:
-                query_loop_results.append("No")
+                url = 'https://sju.primo.exlibrisgroup.com/discovery/search?query=issn,contains,' + str(journal_eissn_list[i]) + ',AND&tab=Everything&search_scope=MyInst_and_CI&vid=01USCIPH_INST:SJU&mode=advanced&offset=0'
+                if query_journal(url) == 0:
+                    query_loop_results.append("No")
+                else:
+                    query_loop_results.append("Yes")
             else:
                 query_loop_results.append("Yes")
-        else:
-            query_loop_results.append("Yes")
+        except KeyboardInterrupt:
+            d = {'Journal' : journal_list, 'Journal Exists' : query_loop_results}
+            df = pd.DataFrame(data=d)
+            print(df)
+
 
     d = {'Journal' : journal_list, 'Journal Exists' : query_loop_results}
     df = pd.DataFrame(data=d)
