@@ -44,10 +44,10 @@ def query_journal(url):
         print("Page URL:", driver.current_url)
         print("Page Title:", driver.title)
         #elements = driver.find_elements(By.TAG_NAME, 'prm-brief-result')
-        #elements = driver.find_elements(By.TAG_NAME, 'prm-brief-result-container')
-        highlighted_text = driver.find_elements(By.TAG_NAME, 'span')
-        print(highlighted_text[258].text)
-        information = action(driver).move_to_element(highlighted_text[258]).double_click(highlighted_text[258]).perform()
+        elements = driver.find_elements(By.TAG_NAME, 'prm-brief-result-container')
+        #highlighted_text = driver.find_elements(By.TAG_NAME, 'span')
+        #print(highlighted_text[258].text)
+        #information = action(driver).move_to_element(highlighted_text[258]).double_click(highlighted_text[258]).perform()
         #information = action(driver).move_to_element(highlighted_text[258]).click(highlighted_text[258]).perform()
         #driver.get(information)
         print(driver.current_url)
@@ -58,23 +58,23 @@ def query_journal(url):
         #        print(i)
             #print(highlighted_text[i].text)
         #print(highlighted_text[256].text)
-        #if elements == []:
-        #    print(f"Journal {journal} not found.")
-        #    return 0
-        #else:
-        #    print(f"Journal {journal} successfully found.")
-        #    return 1
-query_journal(url)
+        if elements == []:
+            print(f"Journal {journal} not found.")
+            return 0
+        else:
+            print(f"Journal {journal} successfully found.")
+            return 1
+#query_journal(url)
 
 def find_all():
+    global query_loop_results
+    query_loop_results = []
     for i in range(len(csvfile)):
         try:
             #I want to add a way to pass through empty spots.
             #if str(journal_issn_list[i]) == "nan":
             #    if str(journal_eissn_list[i]) == "nan":
             #        pass
-            global query_loop_results
-            query_loop_results = []
             url = 'https://sju.primo.exlibrisgroup.com/discovery/search?query=issn,contains,' + str(journal_issn_list[i]) + ',AND&tab=Everything&search_scope=MyInst_and_CI&vid=01USCIPH_INST:SJU&mode=advanced&offset=0'
             journal = journal_list[i]
             if query_journal(url) == 0:
@@ -85,7 +85,10 @@ def find_all():
                     query_loop_results.append("Yes")
             else:
                 query_loop_results.append("Yes")
+            print(query_loop_results)
         except KeyboardInterrupt:
+            print(journal_list)
+            print(query_loop_results)
             d = {'Journal' : journal_list, 'Journal Exists' : query_loop_results}
             df = pd.DataFrame(data=d)
             print(df)
@@ -94,3 +97,5 @@ def find_all():
     d = {'Journal' : journal_list, 'Journal Exists' : query_loop_results}
     df = pd.DataFrame(data=d)
     print(df)
+
+find_all()
