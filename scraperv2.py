@@ -104,17 +104,32 @@ JSPath = 'document.querySelector("#SEARCH_RESULT_RECORDID_cdi_crossref_primary_1
 XPath = '/html/body/primo-explore/div/prm-explore-main/ui-view/prm-search/div/md-content/div[1]/prm-search-result-list/div/div[2]/div/div[1]/prm-brief-result-container/div[1]/div[3]/prm-brief-result/h3/a/span/prm-highlight/span'
 Element = '<span ng-if="::(!$ctrl.isEmailMode())" ng-bind-html="$ctrl.highlightedText" dir="auto">Artificial Intelligence in Organizations: New Opportunities for Phenomenon-Based Theorizing</span>'
         
+def text(query):
+    for i in range(len(query)):
+        print(query[i].text)
 
 def query_journals():
     with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:
+        print(url)
         driver.get(url)
-        trial = driver.find_elements(By.TAG_NAME, 'prm-search-result-list')
+        #trial = driver.find_elements(By.TAG_NAME, 'prm-search-result-list')
         articles = driver.find_elements(By.XPATH, '//prm-brief-result-container')
-        print(articles)
-        for i in range(len(articles)):
-            print(f"This is element {i}")
-            print(articles[i].text)
+        online_access = driver.find_elements(By.XPATH, '//span/prm-highlight/span')
+        #print(articles)
+        #for i in range(len(articles)):
+        #    print(f"This is element {i}")
+        #    print(articles[i].text)
         #print(articles[0].text)
-        
+        text(online_access)
+        titles = []
+        for i in range(int(len(online_access)/3)):
+            titles.append(online_access[i*3].text)
+        abstracts = []
+        keywords = []
+        authors = []
+        for i in range(int(len(online_access)/3)):
+            authors.append(online_access[i*3 + 1].text)
+        print(titles)
+        print(authors)
         #action(driver).move_to_element(element).double_click(highlighted_text[258]).perform()
 query_journals()
