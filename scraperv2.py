@@ -115,21 +115,20 @@ def query_journals():
         #trial = driver.find_elements(By.TAG_NAME, 'prm-search-result-list')
         articles = driver.find_elements(By.XPATH, '//prm-brief-result-container')
         online_access = driver.find_elements(By.XPATH, '//span/prm-highlight/span')
-        #print(articles)
-        #for i in range(len(articles)):
-        #    print(f"This is element {i}")
-        #    print(articles[i].text)
-        #print(articles[0].text)
         text(online_access)
         titles = []
-        for i in range(int(len(online_access)/3)):
-            titles.append(online_access[i*3].text)
         abstracts = []
         keywords = []
         authors = []
+        journal_origin = []
         for i in range(int(len(online_access)/3)):
+            titles.append(online_access[i*3].text)
             authors.append(online_access[i*3 + 1].text)
-        print(titles)
-        print(authors)
+            journal_origin.append(online_access[i*3 + 2])
+        #print(titles)
+        #print(authors)
         #action(driver).move_to_element(element).double_click(highlighted_text[258]).perform()
+        csvlist = {'Article Titles' : titles , 'Authors' : authors , 'Keywords' : keywords , 'Abstracts' : abstracts , 'Journal Origin' : journal_origin}
+        print(csvlist)
+        return csvlist
 query_journals()
