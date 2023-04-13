@@ -66,7 +66,7 @@ def query_journal(url):
             return 1
 #query_journal(url)
 
-def find_all():
+def find_all_journals():
     global query_loop_results
     query_loop_results = []
     for i in range(len(csvfile)):
@@ -98,4 +98,23 @@ def find_all():
     df = pd.DataFrame(data=d)
     print(df)
 
-find_all()
+#find_all_journals()
+
+JSPath = 'document.querySelector("#SEARCH_RESULT_RECORDID_cdi_crossref_primary_10_5465_amd_2018_0084 > div.result-item-text.layout-fill.layout-column.flex > prm-brief-result > h3 > a > span > prm-highlight > span")'
+XPath = '/html/body/primo-explore/div/prm-explore-main/ui-view/prm-search/div/md-content/div[1]/prm-search-result-list/div/div[2]/div/div[1]/prm-brief-result-container/div[1]/div[3]/prm-brief-result/h3/a/span/prm-highlight/span'
+Element = '<span ng-if="::(!$ctrl.isEmailMode())" ng-bind-html="$ctrl.highlightedText" dir="auto">Artificial Intelligence in Organizations: New Opportunities for Phenomenon-Based Theorizing</span>'
+        
+
+def query_journals():
+    with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:
+        driver.get(url)
+        trial = driver.find_elements(By.TAG_NAME, 'prm-search-result-list')
+        articles = driver.find_elements(By.XPATH, '//prm-brief-result-container')
+        print(articles)
+        for i in range(len(articles)):
+            print(f"This is element {i}")
+            print(articles[i].text)
+        #print(articles[0].text)
+        
+        #action(driver).move_to_element(element).double_click(highlighted_text[258]).perform()
+query_journals()
