@@ -103,7 +103,8 @@ def find_all_journals():
 JSPath = 'document.querySelector("#SEARCH_RESULT_RECORDID_cdi_crossref_primary_10_5465_amd_2018_0084 > div.result-item-text.layout-fill.layout-column.flex > prm-brief-result > h3 > a > span > prm-highlight > span")'
 XPath = '/html/body/primo-explore/div/prm-explore-main/ui-view/prm-search/div/md-content/div[1]/prm-search-result-list/div/div[2]/div/div[1]/prm-brief-result-container/div[1]/div[3]/prm-brief-result/h3/a/span/prm-highlight/span'
 Element = '<span ng-if="::(!$ctrl.isEmailMode())" ng-bind-html="$ctrl.highlightedText" dir="auto">Artificial Intelligence in Organizations: New Opportunities for Phenomenon-Based Theorizing</span>'
-        
+ButtonXPath = '//*[@id="SEARCH_RESULT_RECORDID_cdi_crossref_primary_10_46697_001c_67966"]/div[3]/div[2]/prm-search-result-availability-line/div/div/button'
+
 def text(query):
     for i in range(len(query)):
         print(query[i].text)
@@ -114,21 +115,24 @@ def query_journals():
         driver.get(url)
         #trial = driver.find_elements(By.TAG_NAME, 'prm-search-result-list')
         articles = driver.find_elements(By.XPATH, '//prm-brief-result-container')
-        online_access = driver.find_elements(By.XPATH, '//span/prm-highlight/span')
+        article_information = driver.find_elements(By.XPATH, '//span/prm-highlight/span')
+        online_access = driver.find_elements(By.XPATH, '//prm-search-result-availability-line/div/div/button')
         text(online_access)
+        """
         titles = []
         abstracts = []
         keywords = []
         authors = []
         journal_origin = []
-        for i in range(int(len(online_access)/3)):
-            titles.append(online_access[i*3].text)
-            authors.append(online_access[i*3 + 1].text)
-            journal_origin.append(online_access[i*3 + 2])
+        for i in range(int(len(article_information)/3)):
+            titles.append(article_information[i*3].text)
+            authors.append(article_information[i*3 + 1].text)
+            journal_origin.append(article_information[i*3 + 2])
         #print(titles)
         #print(authors)
         #action(driver).move_to_element(element).double_click(highlighted_text[258]).perform()
         csvlist = {'Article Titles' : titles , 'Authors' : authors , 'Keywords' : keywords , 'Abstracts' : abstracts , 'Journal Origin' : journal_origin}
         print(csvlist)
         return csvlist
+        """
 query_journals()
