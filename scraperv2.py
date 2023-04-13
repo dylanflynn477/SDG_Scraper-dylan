@@ -118,6 +118,7 @@ def query_journals():
     authors = []
     journal_origin = []
     with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:
+        base_window = driver.window_handles[0]
         print(url)
         driver.get(url)
         #trial = driver.find_elements(By.TAG_NAME, 'prm-search-result-list')
@@ -129,8 +130,11 @@ def query_journals():
         # Switching to open journal tab
         driver.switch_to.window(driver.window_handles[1])
         abstract = driver.find_elements(By.XPATH, '//article/div[4]/div/div[2]/div[2]/div[1]/div')
-        print(abstract[0].text)
+        #print(abstract[0].text)
         abstracts.append(abstract[0].text)
+        driver.close()
+        driver.switch_to.window(base_window)
+        #print(driver.current_url)
         #for j in range(0,100):
         #    if abstract[j].text != "":
         #        print(j)
