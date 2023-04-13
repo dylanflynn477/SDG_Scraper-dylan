@@ -4,6 +4,7 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 import pandas as pd
 from selenium.webdriver.common.action_chains import ActionChains as action
+import time 
 
 # Declaring global variables
 global url
@@ -104,12 +105,18 @@ JSPath = 'document.querySelector("#SEARCH_RESULT_RECORDID_cdi_crossref_primary_1
 XPath = '/html/body/primo-explore/div/prm-explore-main/ui-view/prm-search/div/md-content/div[1]/prm-search-result-list/div/div[2]/div/div[1]/prm-brief-result-container/div[1]/div[3]/prm-brief-result/h3/a/span/prm-highlight/span'
 Element = '<span ng-if="::(!$ctrl.isEmailMode())" ng-bind-html="$ctrl.highlightedText" dir="auto">Artificial Intelligence in Organizations: New Opportunities for Phenomenon-Based Theorizing</span>'
 ButtonXPath = '//*[@id="SEARCH_RESULT_RECORDID_cdi_crossref_primary_10_46697_001c_67966"]/div[3]/div[2]/prm-search-result-availability-line/div/div/button'
+AbstractXPath = '/html/body/div[4]/div[1]/div/div[7]/div[3]/div/div/div[2]/article/div[4]/div/div[2]/div[2]/div[1]/div'
 
 def text(query):
     for i in range(len(query)):
         print(query[i].text)
 
 def query_journals():
+    titles = []
+    abstracts = []
+    keywords = []
+    authors = []
+    journal_origin = []
     with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:
         print(url)
         driver.get(url)
@@ -117,13 +124,21 @@ def query_journals():
         articles = driver.find_elements(By.XPATH, '//prm-brief-result-container')
         article_information = driver.find_elements(By.XPATH, '//span/prm-highlight/span')
         online_access = driver.find_elements(By.XPATH, '//prm-search-result-availability-line/div/div/button')
-        text(online_access)
+        action(driver).move_to_element(online_access[0]).click(online_access[0]).perform()
+        time.sleep(5.0)
+        # Switching to open journal tab
+        driver.switch_to.window(driver.window_handles[1])
+        abstract = driver.find_elements(By.XPATH, '//article/div[4]/div/div[2]/div[2]/div[1]/div')
+        print(abstract[0].text)
+        abstracts.append(abstract[0].text)
+        #for j in range(0,100):
+        #    if abstract[j].text != "":
+        #        print(j)
+            #print(abstract[j].text)
+        #for handle in driver.window_handles:
+        #    driver.switch_to.window(handle)
+        #    print(driver.current_url)
         """
-        titles = []
-        abstracts = []
-        keywords = []
-        authors = []
-        journal_origin = []
         for i in range(int(len(article_information)/3)):
             titles.append(article_information[i*3].text)
             authors.append(article_information[i*3 + 1].text)
