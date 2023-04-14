@@ -90,12 +90,12 @@ def find_all_journals():
 
 #find_all_journals()
 
-JSPath = 'document.querySelector("#SEARCH_RESULT_RECORDID_cdi_crossref_primary_10_5465_amd_2018_0084 > div.result-item-text.layout-fill.layout-column.flex > prm-brief-result > h3 > a > span > prm-highlight > span")'
-XPath = '/html/body/primo-explore/div/prm-explore-main/ui-view/prm-search/div/md-content/div[1]/prm-search-result-list/div/div[2]/div/div[1]/prm-brief-result-container/div[1]/div[3]/prm-brief-result/h3/a/span/prm-highlight/span'
-Element = '<span ng-if="::(!$ctrl.isEmailMode())" ng-bind-html="$ctrl.highlightedText" dir="auto">Artificial Intelligence in Organizations: New Opportunities for Phenomenon-Based Theorizing</span>'
-ButtonXPath = '//*[@id="SEARCH_RESULT_RECORDID_cdi_crossref_primary_10_46697_001c_67966"]/div[3]/div[2]/prm-search-result-availability-line/div/div/button'
-AbstractXPath = '/html/body/div[4]/div[1]/div/div[7]/div[3]/div/div/div[2]/article/div[4]/div/div[2]/div[2]/div[1]/div'
-KeywordXPath = '/html/body/div[4]/div[1]/div/div[7]/div[3]/div/div/div[2]/article/div[4]/div/div[6]/div/div[1]/div/text/div[2]/div/p[1]'
+#JSPath = 'document.querySelector("#SEARCH_RESULT_RECORDID_cdi_crossref_primary_10_5465_amd_2018_0084 > div.result-item-text.layout-fill.layout-column.flex > prm-brief-result > h3 > a > span > prm-highlight > span")'
+#XPath = '/html/body/primo-explore/div/prm-explore-main/ui-view/prm-search/div/md-content/div[1]/prm-search-result-list/div/div[2]/div/div[1]/prm-brief-result-container/div[1]/div[3]/prm-brief-result/h3/a/span/prm-highlight/span'
+#Element = '<span ng-if="::(!$ctrl.isEmailMode())" ng-bind-html="$ctrl.highlightedText" dir="auto">Artificial Intelligence in Organizations: New Opportunities for Phenomenon-Based Theorizing</span>'
+#ButtonXPath = '//*[@id="SEARCH_RESULT_RECORDID_cdi_crossref_primary_10_46697_001c_67966"]/div[3]/div[2]/prm-search-result-availability-line/div/div/button'
+#AbstractXPath = '/html/body/div[4]/div[1]/div/div[7]/div[3]/div/div/div[2]/article/div[4]/div/div[2]/div[2]/div[1]/div'
+#KeywordXPath = '/html/body/div[4]/div[1]/div/div[7]/div[3]/div/div/div[2]/article/div[4]/div/div[6]/div/div[1]/div/text/div[2]/div/p[1]'
 
 def text(query):
     for i in range(len(query)):
@@ -116,11 +116,15 @@ def query_journals():
         article_information = driver.find_elements(By.XPATH, '//span/prm-highlight/span')
         online_access = driver.find_elements(By.XPATH, '//prm-search-result-availability-line/div/div/button')
         for i in range(len(online_access)):
-            try:
+            #try:
                 action(driver).move_to_element(online_access[i]).click(online_access[i]).perform()
                 time.sleep(5.0)
                 # Switching to open journal tab
-                driver.switch_to.window(driver.window_handles[1])
+                try:
+                    driver.switch_to.window(driver.window_handles[1])
+                except IndexError:
+                    action(driver).move_to_element(online_access[i]).click(online_access[i]).perform()
+                    driver.switch_to.window(driver.window_handles[1])
                 abstract = driver.find_elements(By.XPATH, '//article/div[4]/div/div[2]/div[2]/div[1]/div')
                 keyword = driver.find_elements(By.XPATH, '//div/div[6]/div/div[1]/div/text/div[2]/div/p[1]')
                 if abstract and keyword:
@@ -135,11 +139,11 @@ def query_journals():
                 driver.close()
                 driver.switch_to.window(base_window)
                 time.sleep(5.0)
-            except IndexError:
-                print(f"Index error at list number {i}")
-                csvlist = {'Article Titles' : titles , 'Authors' : authors , 'Keywords' : keywords , 'Abstracts' : abstracts , 'Journal Origin' : journal_origin}
-                print(csvlist)
-                return csvlist
+            #except IndexError:
+            #    print(f"Index error at list number {i}")
+            #    csvlist = {'Article Titles' : titles , 'Authors' : authors , 'Keywords' : keywords , 'Abstracts' : abstracts , 'Journal Origin' : journal_origin}
+            #    print(csvlist)
+            #    return csvlist
         # Switching to open journal tab
         #driver.switch_to.window(driver.window_handles[1])
         #abstract = driver.find_elements(By.XPATH, '//article/div[4]/div/div[2]/div[2]/div[1]/div')
@@ -162,9 +166,9 @@ def query_journals():
         csvlist = {'Article Titles' : titles , 'Authors' : authors , 'Keywords' : keywords , 'Abstracts' : abstracts , 'Journal Origin' : journal_origin}
         print(csvlist)
         return csvlist
-query_journals()
-#csvdf = pd.DataFrame(data=query_journals())
-#print(csvdf)
+#query_journals()
+csvdf = pd.DataFrame(data=query_journals())
+print(csvdf)
 
 def debug_article(i):
     titles = []
@@ -195,6 +199,7 @@ def debug_article(i):
         else:
             abstracts.append(None)
             keywords.append(None)
+            print("Abstract/keywords not found")
         driver.close()
         driver.switch_to.window(base_window)
     # Switching to open journal tab
@@ -212,4 +217,4 @@ def debug_article(i):
     #print(titles)
     #print(authors)
     #action(driver).move_to_element(element).double_click(highlighted_text[258]).perform()
-#debug_article(7)
+#debug_article(4)
