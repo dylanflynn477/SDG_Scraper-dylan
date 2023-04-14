@@ -223,7 +223,7 @@ def debug_article(i):
 #debug_article(4)
 
 #/html/body/primo-explore/div/prm-explore-main/ui-view/prm-search/div/md-content/div[1]/prm-search-result-list/div/div[2]/prm-page-nav-menu/div/div/div[1]/div[3]/a
-
+"""
 with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:
     driver.get(url)
     nextbutton = driver.find_elements(By.XPATH, '//prm-page-nav-menu/div/div/div[1]/div[3]/a/prm-icon/md-icon')
@@ -233,3 +233,4 @@ with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), op
     action(driver).move_to_element(nextbutton[0]).click(nextbutton[0]).perform()
     #action(driver).move_to_element(nextbutton[0]).click(nextbutton[0]).perform()
     print(driver.current_url)
+    """
