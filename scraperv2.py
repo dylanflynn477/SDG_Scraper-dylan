@@ -115,37 +115,36 @@ def query_journals():
         articles = driver.find_elements(By.XPATH, '//prm-brief-result-container')
         article_information = driver.find_elements(By.XPATH, '//span/prm-highlight/span')
         online_access = driver.find_elements(By.XPATH, '//prm-search-result-availability-line/div/div/button')
-        action(driver).move_to_element(online_access[3]).click(online_access[3]).perform()
-        time.sleep(5.0)
-        # Switching to open journal tab
-        driver.switch_to.window(driver.window_handles[1])
-        abstract = driver.find_elements(By.XPATH, '//article/div[4]/div/div[2]/div[2]/div[1]/div')
-        keyword = driver.find_elements(By.XPATH, '//div/div[6]/div/div[1]/div/text/div[2]/div/p[1]')
-        #keyword[0].text.lstrip('Keywords: ')
-        print(keyword)
-        print(keyword[0].text)
-        #print(abstract[0].text)
-        abstracts.append(abstract[0].text)
-        keywords.append(keyword[0].text)
-        driver.close()
-        driver.switch_to.window(base_window)
-        """
         for i in range(len(online_access)):
-            action(driver).move_to_element(online_access[i]).click(online_access[i]).perform()
-            time.sleep(5.0)
-            # Switching to open journal tab
-            driver.switch_to.window(driver.window_handles[1])
-            abstract = driver.find_elements(By.XPATH, '//article/div[4]/div/div[2]/div[2]/div[1]/div')
-            keyword = driver.find_elements(By.XPATH, '//div/div[6]/div/div[1]/div/text/div[2]/div/p[1]')
-            #keyword[0].text.lstrip('Keywords: ')
-            print(keyword[0].text)
-            #print(abstract[0].text)
-            abstracts.append(abstract[0].text)
-            keywords.append(keyword[0].text)
-            driver.close()
-            driver.switch_to.window(base_window)
-            #print(driver.current_url)
-        """
+            try:
+                action(driver).move_to_element(online_access[i]).click(online_access[i]).perform()
+                time.sleep(5.0)
+                # Switching to open journal tab
+                driver.switch_to.window(driver.window_handles[1])
+                abstract = driver.find_elements(By.XPATH, '//article/div[4]/div/div[2]/div[2]/div[1]/div')
+                keyword = driver.find_elements(By.XPATH, '//div/div[6]/div/div[1]/div/text/div[2]/div/p[1]')
+                if abstract and keyword:
+                    print(keyword)
+                    print(keyword[0].text)
+                    #print(abstract[0].text)
+                    abstracts.append(abstract[0].text)
+                    keywords.append(keyword[0].text)
+                else:
+                    abstracts.append(None)
+                    keywords.append(None)
+                driver.close()
+                driver.switch_to.window(base_window)
+                time.sleep(5.0)
+            except IndexError:
+                print(f"Index error at list number {i}")
+                csvlist = {'Article Titles' : titles , 'Authors' : authors , 'Keywords' : keywords , 'Abstracts' : abstracts , 'Journal Origin' : journal_origin}
+                print(csvlist)
+                return csvlist
+        # Switching to open journal tab
+        #driver.switch_to.window(driver.window_handles[1])
+        #abstract = driver.find_elements(By.XPATH, '//article/div[4]/div/div[2]/div[2]/div[1]/div')
+        #keyword = driver.find_elements(By.XPATH, '//div/div[6]/div/div[1]/div/text/div[2]/div/p[1]')
+        #keyword[0].text.lstrip('Keywords: ')
         #for j in range(0,100):
         #    if abstract[j].text != "":
         #        print(j)
@@ -166,3 +165,51 @@ def query_journals():
 query_journals()
 #csvdf = pd.DataFrame(data=query_journals())
 #print(csvdf)
+
+def debug_article(i):
+    titles = []
+    abstracts = []
+    keywords = []
+    authors = []
+    journal_origin = []
+    with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:
+        base_window = driver.window_handles[0]
+        print(url)
+        driver.get(url)
+        #trial = driver.find_elements(By.TAG_NAME, 'prm-search-result-list')
+        articles = driver.find_elements(By.XPATH, '//prm-brief-result-container')
+        article_information = driver.find_elements(By.XPATH, '//span/prm-highlight/span')
+        online_access = driver.find_elements(By.XPATH, '//prm-search-result-availability-line/div/div/button')
+        action(driver).move_to_element(online_access[i]).click(online_access[i]).perform()
+        time.sleep(5.0)
+        # Switching to open journal tab
+        driver.switch_to.window(driver.window_handles[1])
+        abstract = driver.find_elements(By.XPATH, '//article/div[4]/div/div[2]/div[2]/div[1]/div')
+        keyword = driver.find_elements(By.XPATH, '//div/div[6]/div/div[1]/div/text/div[2]/div/p[1]')
+        if abstract and keyword:
+            print(keyword)
+            print(keyword[0].text)
+            #print(abstract[0].text)
+            abstracts.append(abstract[0].text)
+            keywords.append(keyword[0].text)
+        else:
+            abstracts.append(None)
+            keywords.append(None)
+        driver.close()
+        driver.switch_to.window(base_window)
+    # Switching to open journal tab
+    #driver.switch_to.window(driver.window_handles[1])
+    #abstract = driver.find_elements(By.XPATH, '//article/div[4]/div/div[2]/div[2]/div[1]/div')
+    #keyword = driver.find_elements(By.XPATH, '//div/div[6]/div/div[1]/div/text/div[2]/div/p[1]')
+    #keyword[0].text.lstrip('Keywords: ')
+    #for j in range(0,100):
+    #    if abstract[j].text != "":
+    #        print(j)
+        #print(abstract[j].text)
+    #for handle in driver.window_handles:
+    #    driver.switch_to.window(handle)
+    #    print(driver.current_url)
+    #print(titles)
+    #print(authors)
+    #action(driver).move_to_element(element).double_click(highlighted_text[258]).perform()
+#debug_article(7)
