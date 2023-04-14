@@ -97,6 +97,8 @@ def find_all_journals():
 #AbstractXPath = '/html/body/div[4]/div[1]/div/div[7]/div[3]/div/div/div[2]/article/div[4]/div/div[2]/div[2]/div[1]/div'
 #KeywordXPath = '/html/body/div[4]/div[1]/div/div[7]/div[3]/div/div/div[2]/article/div[4]/div/div[6]/div/div[1]/div/text/div[2]/div/p[1]'
 
+#NextPageXPath = '/html/body/primo-explore/div/prm-explore-main/ui-view/prm-search/div/md-content/div[1]/prm-search-result-list/div/div[2]/prm-page-nav-menu/div/div/div[1]/div[3]/a/prm-icon/md-icon'
+
 def text(query):
     for i in range(len(query)):
         print(query[i].text)
@@ -129,10 +131,10 @@ def query_journals():
                 keyword = driver.find_elements(By.XPATH, '//div/div[6]/div/div[1]/div/text/div[2]/div/p[1]')
                 if abstract and keyword:
                     print(keyword)
-                    print(keyword[0].text)
+                    print(keyword[0].text.replace('Keywords: ', ''))
                     #print(abstract[0].text)
                     abstracts.append(abstract[0].text)
-                    keywords.append(keyword[0].text)
+                    keywords.append(keyword[0].text.replace('Keywords: ', ''))
                 else:
                     abstracts.append(None)
                     keywords.append(None)
@@ -167,8 +169,8 @@ def query_journals():
         print(csvlist)
         return csvlist
 #query_journals()
-csvdf = pd.DataFrame(data=query_journals())
-print(csvdf)
+#csvdf = pd.DataFrame(data=query_journals())
+#print(csvdf)
 
 def debug_article(i):
     titles = []
@@ -218,3 +220,15 @@ def debug_article(i):
     #print(authors)
     #action(driver).move_to_element(element).double_click(highlighted_text[258]).perform()
 #debug_article(4)
+
+#/html/body/primo-explore/div/prm-explore-main/ui-view/prm-search/div/md-content/div[1]/prm-search-result-list/div/div[2]/prm-page-nav-menu/div/div/div[1]/div[3]/a
+
+with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:
+    driver.get(url)
+    nextbutton = driver.find_elements(By.XPATH, '//prm-page-nav-menu/div/div/div[1]/div[3]/a/prm-icon/md-icon')
+    #nextbutton = driver.find_elements(By.CLASS_NAME, 'prm-icon')
+    print(nextbutton)
+    print(driver.current_url)
+    action(driver).move_to_element(nextbutton[0]).click(nextbutton[0]).perform()
+    #action(driver).move_to_element(nextbutton[0]).click(nextbutton[0]).perform()
+    print(driver.current_url)
