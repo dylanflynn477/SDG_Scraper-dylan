@@ -169,8 +169,9 @@ def query_journals():
         print(csvlist)
         return csvlist
 #query_journals()
-#csvdf = pd.DataFrame(data=query_journals())
-#print(csvdf)
+csvdf = pd.DataFrame(data=query_journals())
+print(csvdf)
+csvdf.to_csv('output.csv')
 
 def debug_article(i):
     titles = []
