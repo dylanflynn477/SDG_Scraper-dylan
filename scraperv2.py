@@ -97,6 +97,7 @@ def find_all_journals():
 #AbstractXPath = '/html/body/div[4]/div[1]/div/div[7]/div[3]/div/div/div[2]/article/div[4]/div/div[2]/div[2]/div[1]/div'
 #KeywordXPath = '/html/body/div[4]/div[1]/div/div[7]/div[3]/div/div/div[2]/article/div[4]/div/div[6]/div/div[1]/div/text/div[2]/div/p[1]'
 
+#Page1NextPageXPath = '/html/body/primo-explore/div/prm-explore-main/ui-view/prm-search/div/md-content/div[1]/prm-search-result-list/div/div[2]/prm-page-nav-menu/div/div/div[1]/div[3]/a'
 #NextPageXPath = '/html/body/primo-explore/div/prm-explore-main/ui-view/prm-search/div/md-content/div[1]/prm-search-result-list/div/div[2]/prm-page-nav-menu/div/div/div[1]/div[3]/a/prm-icon/md-icon'
 #RequestableXPath = '/html/body/primo-explore/div/prm-explore-main/ui-view/prm-search/div/md-content/div[1]/prm-search-result-list/div/div[2]/div/div[1]/prm-brief-result-container/div[1]/div[3]/div[2]/prm-search-result-availability-line/div/div/button/span[2]/span'
 #RequestableElement = '<span class="availability-status no_fulltext " ng-style="::$ctrl.getNgrsStyle()" ng-class="::{'text-rtl': $ctrl.switchToLtrString()}" translate="delivery.code.no_fulltext" translate-values="::$ctrl.getPlaceHolders($ctrl.result)" translate-compile="">Requestable</span>'
@@ -129,6 +130,30 @@ def next_page():
         else:
             pass
 
+def find_next_page():
+    with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:
+        global url
+        driver.get(url)
+        nextbutton = driver.find_elements(By.XPATH, '//div/div[1]/div[3]/a')
+        #nextbutton = driver.find_elements(By.XPATH, '//prm-page-nav-menu/div/div/div[1]/div[3]/a/prm-icon/md-icon')
+        #resultscount = driver.find_elements(By.XPATH, '//md-input-container/md-select/md-select-value/span')
+        # 34 shows the results count.
+        #resultscount[34].text
+        if nextbutton:
+            #nextbutton = driver.find_elements(By.CLASS_NAME, 'prm-icon')
+            print(nextbutton)
+            print(driver.current_url)
+            # Double click element in case it doesn't register the first time, because the library website is trash
+            oldurl = driver.current_url
+            action(driver).move_to_element(nextbutton[0]).click(nextbutton[0]).perform()
+            if driver.current_url == oldurl:
+                action(driver).move_to_element(nextbutton[0]).click(nextbutton[0]).perform()
+            print(driver.current_url)
+            url = driver.current_url
+        else:
+            pass
+find_next_page()
+
 # Solving for those journals that DO have online access.
 
 def query_journals():
@@ -139,75 +164,80 @@ def query_journals():
     journal_origin = []
     with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:
         base_window = driver.window_handles[0]
-        print(url)
-        driver.get(url)
-        #trial = driver.find_elements(By.TAG_NAME, 'prm-search-result-list')
-        articles = driver.find_elements(By.XPATH, '//prm-brief-result-container')
-        article_information = driver.find_elements(By.XPATH, '//span/prm-highlight/span')
-        online_access = driver.find_elements(By.XPATH, '//prm-search-result-availability-line/div/div/button')
-        requestable = driver.find_elements(By.XPATH, '//prm-search-result-availability-line/div/div/button/span[2]/span')
-        #requestable = driver.find_elements(By.CLASS_NAME, 'availability-status')
-        print(online_access)
-        print(requestable)
-        text(requestable)
-        """
-        for i in range(len(online_access)):
-            #try:
-                action(driver).move_to_element(online_access[i]).click(online_access[i]).perform()
-                time.sleep(5.0)
-                # Switching to open journal tab
-                try:
-                    driver.switch_to.window(driver.window_handles[1])
-                except IndexError:
+        #try:
+        for j in range(0,28):
+            global url
+            driver.get(url)
+            #trial = driver.find_elements(By.TAG_NAME, 'prm-search-result-list')
+            articles = driver.find_elements(By.XPATH, '//prm-brief-result-container')
+            article_information = driver.find_elements(By.XPATH, '//span/prm-highlight/span')
+            online_access = driver.find_elements(By.XPATH, '//prm-search-result-availability-line/div/div/button')
+            #requestable = driver.find_elements(By.XPATH, '//prm-search-result-availability-line/div/div/button/span[2]/span')
+            #requestable = driver.find_elements(By.CLASS_NAME, 'availability-status')
+            #print(online_access)
+            #print(requestable)
+            #text(requestable)
+            for i in range(len(online_access)):
+                #try:
                     action(driver).move_to_element(online_access[i]).click(online_access[i]).perform()
-                    driver.switch_to.window(driver.window_handles[1])
-                abstract = driver.find_elements(By.XPATH, '//article/div[4]/div/div[2]/div[2]/div[1]/div')
-                keyword = driver.find_elements(By.XPATH, '//div/div[6]/div/div[1]/div/text/div[2]/div/p[1]')
-                if abstract and keyword:
-                    print(keyword)
-                    print(keyword[0].text.replace('Keywords: ', ''))
-                    #print(abstract[0].text)
-                    abstracts.append(abstract[0].text)
-                    keywords.append(keyword[0].text.replace('Keywords: ', ''))
-                else:
-                    abstracts.append(None)
-                    keywords.append(None)
-                driver.close()
-                driver.switch_to.window(base_window)
-                time.sleep(5.0)
-        """
-            #except IndexError:
-            #    print(f"Index error at list number {i}")
-            #    csvlist = {'Article Titles' : titles , 'Authors' : authors , 'Keywords' : keywords , 'Abstracts' : abstracts , 'Journal Origin' : journal_origin}
-            #    print(csvlist)
-            #    return csvlist
-        # Switching to open journal tab
-        #driver.switch_to.window(driver.window_handles[1])
-        #abstract = driver.find_elements(By.XPATH, '//article/div[4]/div/div[2]/div[2]/div[1]/div')
-        #keyword = driver.find_elements(By.XPATH, '//div/div[6]/div/div[1]/div/text/div[2]/div/p[1]')
-        #keyword[0].text.lstrip('Keywords: ')
-        #for j in range(0,100):
-        #    if abstract[j].text != "":
-        #        print(j)
-            #print(abstract[j].text)
-        #for handle in driver.window_handles:
-        #    driver.switch_to.window(handle)
-        #    print(driver.current_url)
-        for i in range(int(len(article_information)/3)):
-            titles.append(article_information[i*3].text)
-            authors.append(article_information[i*3 + 1].text)
-            journal_origin.append(article_information[i*3 + 2].text)
+                    time.sleep(5.0)
+                    # Switching to open journal tab
+                    try:
+                        driver.switch_to.window(driver.window_handles[1])
+                    except IndexError:
+                        action(driver).move_to_element(online_access[i]).click(online_access[i]).perform()
+                        driver.switch_to.window(driver.window_handles[1])
+                    abstract = driver.find_elements(By.XPATH, '//article/div[4]/div/div[2]/div[2]/div[1]/div')
+                    keyword = driver.find_elements(By.XPATH, '//div/div[6]/div/div[1]/div/text/div[2]/div/p[1]')
+                    if abstract and keyword:
+                        print(keyword)
+                        print(keyword[0].text.replace('Keywords: ', ''))
+                        #print(abstract[0].text)
+                        abstracts.append(abstract[0].text)
+                        keywords.append(keyword[0].text.replace('Keywords: ', ''))
+                    else:
+                        abstracts.append(None)
+                        keywords.append(None)
+                    driver.close()
+                    driver.switch_to.window(base_window)
+                    time.sleep(5.0)
+            for i in range(int(len(article_information)/3)):
+                titles.append(article_information[i*3].text)
+                authors.append(article_information[i*3 + 1].text)
+                journal_origin.append(article_information[i*3 + 2].text)
+            driver.get(url)
+            if j == 0:
+                nextbutton = driver.find_elements(By.XPATH, '//div/div[1]/div[3]/a')
+                print("first page")
+            else:
+                nextbutton = driver.find_elements(By.XPATH, '//prm-page-nav-menu/div/div/div[1]/div[3]/a/prm-icon/md-icon')
+                print("incorrect response")
+            print(nextbutton)
+            oldurl = driver.current_url
+            action(driver).move_to_element(nextbutton[0]).click(nextbutton[0]).perform()
+            if driver.current_url == oldurl:
+                action(driver).move_to_element(nextbutton[0]).click(nextbutton[0]).perform()
+            print(driver.current_url)
+            url = driver.current_url
         #print(titles)
         #print(authors)
         #action(driver).move_to_element(element).double_click(highlighted_text[258]).perform()
         csvlist = {'Article Titles' : titles , 'Authors' : authors , 'Keywords' : keywords , 'Abstracts' : abstracts , 'Journal Origin' : journal_origin}
         print(csvlist)
         return csvlist
-query_journals()
-#csvdf = pd.DataFrame(data=query_journals())
-#print(csvdf)
-#csvdf.to_csv('output.csv')
+        #except:
+        #    csvlist = {'Article Titles' : titles , 'Authors' : authors , 'Keywords' : keywords , 'Abstracts' : abstracts , 'Journal Origin' : journal_origin}
+        #    print(csvlist)
+        #   csvdf = pd.DataFrame(data=csvlist)
+        #    csvdf.to_csv('output.csv')
+        #    return csvlist
 
+#query_journals()
+"""
+csvdf = pd.DataFrame(data=query_journals())
+print(csvdf)
+csvdf.to_csv('output.csv')
+"""
 
 
 # Solving for those journals that do NOT have online access. This process is significantly more complicated since it involves pulling information from a csv file.
