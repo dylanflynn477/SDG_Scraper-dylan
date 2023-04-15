@@ -222,6 +222,11 @@ def query_journals():
         #print(authors)
         #action(driver).move_to_element(element).double_click(highlighted_text[258]).perform()
         csvlist = {'Article Titles' : titles , 'Authors' : authors , 'Keywords' : keywords , 'Abstracts' : abstracts , 'Journal Origin' : journal_origin}
+        print(titles)
+        print(authors)
+        print(keywords)
+        print(abstracts)
+        print(journal_origin)
         print(csvlist)
         return csvlist
         #except:
