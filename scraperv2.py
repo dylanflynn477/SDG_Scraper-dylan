@@ -169,9 +169,9 @@ def query_journals():
         print(csvlist)
         return csvlist
 #query_journals()
-csvdf = pd.DataFrame(data=query_journals())
-print(csvdf)
-csvdf.to_csv('output.csv')
+#csvdf = pd.DataFrame(data=query_journals())
+#print(csvdf)
+#csvdf.to_csv('output.csv')
 
 def debug_article(i):
     titles = []
@@ -222,15 +222,22 @@ def debug_article(i):
     #action(driver).move_to_element(element).double_click(highlighted_text[258]).perform()
 #debug_article(4)
 
-#/html/body/primo-explore/div/prm-explore-main/ui-view/prm-search/div/md-content/div[1]/prm-search-result-list/div/div[2]/prm-page-nav-menu/div/div/div[1]/div[3]/a
-"""
-with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:
-    driver.get(url)
-    nextbutton = driver.find_elements(By.XPATH, '//prm-page-nav-menu/div/div/div[1]/div[3]/a/prm-icon/md-icon')
-    #nextbutton = driver.find_elements(By.CLASS_NAME, 'prm-icon')
-    print(nextbutton)
-    print(driver.current_url)
-    action(driver).move_to_element(nextbutton[0]).click(nextbutton[0]).perform()
-    #action(driver).move_to_element(nextbutton[0]).click(nextbutton[0]).perform()
-    print(driver.current_url)
-    """
+#ButtonPage1 = /html/body/primo-explore/div/prm-explore-main/ui-view/prm-search/div/md-content/div[1]/prm-search-result-list/div/div[2]/prm-page-nav-menu/div/div/div[1]/div[3]/a
+#ButtonPage 2 = /html/body/primo-explore/div/prm-explore-main/ui-view/prm-search/div/md-content/div[1]/prm-search-result-list/div/div[2]/prm-page-nav-menu/div/div/div[1]/div[3]/a/prm-icon/md-icon
+#url = 'https://sju.primo.exlibrisgroup.com/discovery/search?query=issn,contains,1938-9590,AND&pfilter=rtype,exact,articles,AND&tab=Everything&search_scope=MyInst_and_CI&vid=01USCIPH_INST:SJU&mode=advanced&offset=10'
+
+def next_page():
+    with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:
+        global url
+        driver.get(url)
+        nextbutton = driver.find_elements(By.XPATH, '//prm-page-nav-menu/div/div/div[1]/div[3]/a/prm-icon/md-icon')
+        #nextbutton = driver.find_elements(By.CLASS_NAME, 'prm-icon')
+        print(nextbutton)
+        print(driver.current_url)
+        action(driver).move_to_element(nextbutton[0]).click(nextbutton[0]).perform()
+        #action(driver).move_to_element(nextbutton[0]).click(nextbutton[0]).perform()
+        print(driver.current_url)
+        url = driver.current_url
+        
+next_page()
+next_page()
