@@ -169,6 +169,7 @@ def query_journals():
         for j in range(0,28):
             global url
             driver.get(url)
+            time.sleep(5.0)
             #trial = driver.find_elements(By.TAG_NAME, 'prm-search-result-list')
             articles = driver.find_elements(By.XPATH, '//prm-brief-result-container')
             article_information = driver.find_elements(By.XPATH, '//span/prm-highlight/span')
@@ -180,34 +181,36 @@ def query_journals():
             #text(requestable)
             for i in range(len(online_access)):
                 #try:
+                action(driver).move_to_element(online_access[i]).click(online_access[i]).perform()
+                time.sleep(5.0)
+                # Switching to open journal tab
+                try:
+                    driver.switch_to.window(driver.window_handles[1])
+                except IndexError:
                     action(driver).move_to_element(online_access[i]).click(online_access[i]).perform()
-                    time.sleep(5.0)
-                    # Switching to open journal tab
-                    try:
-                        driver.switch_to.window(driver.window_handles[1])
-                    except IndexError:
-                        action(driver).move_to_element(online_access[i]).click(online_access[i]).perform()
-                        driver.switch_to.window(driver.window_handles[1])
-                    abstract = driver.find_elements(By.XPATH, '//article/div[4]/div/div[2]/div[2]/div[1]/div')
-                    keyword = driver.find_elements(By.XPATH, '//div/div[6]/div/div[1]/div/text/div[2]/div/p[1]')
-                    if abstract and keyword:
-                        print(keyword)
-                        print(keyword[0].text.replace('Keywords: ', ''))
-                        #print(abstract[0].text)
-                        abstracts.append(abstract[0].text)
-                        keywords.append(keyword[0].text.replace('Keywords: ', ''))
-                    else:
-                        abstracts.append(None)
-                        keywords.append(None)
-                    driver.close()
-                    driver.switch_to.window(base_window)
-                    time.sleep(5.0)
+                    driver.switch_to.window(driver.window_handles[1])
+                abstract = driver.find_elements(By.XPATH, '//article/div[4]/div/div[2]/div[2]/div[1]/div')
+                keyword = driver.find_elements(By.XPATH, '//div/div[6]/div/div[1]/div/text/div[2]/div/p[1]')
+                if abstract and keyword:
+                    print(keyword)
+                    print(keyword[0].text.replace('Keywords: ', ''))
+                    #print(abstract[0].text)
+                    abstracts.append(abstract[0].text)
+                    keywords.append(keyword[0].text.replace('Keywords: ', ''))
+                else:
+                    abstracts.append(None)
+                    keywords.append(None)
+                driver.close()
+                driver.switch_to.window(base_window)
+                time.sleep(5.0)
             for i in range(int(len(article_information)/3)):
                 titles.append(article_information[i*3].text)
                 authors.append(article_information[i*3 + 1].text)
                 journal_origin.append(article_information[i*3 + 2].text)
             driver.get(url)
+            time.sleep(5.0)
             nextbutton = driver.find_elements(By.XPATH, '//prm-page-nav-menu/div/div/div[1]/div[3]/a/prm-icon/md-icon')
+            print(nextbutton)
             oldurl = driver.current_url
             action(driver).move_to_element(nextbutton[0]).click(nextbutton[0]).perform()
             time.sleep(1.0)
