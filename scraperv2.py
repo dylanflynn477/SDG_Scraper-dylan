@@ -134,8 +134,8 @@ def find_next_page():
     with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:
         global url
         driver.get(url)
-        nextbutton = driver.find_elements(By.XPATH, '//div/div[1]/div[3]/a')
-        #nextbutton = driver.find_elements(By.XPATH, '//prm-page-nav-menu/div/div/div[1]/div[3]/a/prm-icon/md-icon')
+        #nextbutton = driver.find_elements(By.XPATH, '//div/div[1]/div[3]/a')
+        nextbutton = driver.find_elements(By.XPATH, '//prm-page-nav-menu/div/div/div[1]/div[3]/a/prm-icon/md-icon')
         #resultscount = driver.find_elements(By.XPATH, '//md-input-container/md-select/md-select-value/span')
         # 34 shows the results count.
         #resultscount[34].text
@@ -146,13 +146,14 @@ def find_next_page():
             # Double click element in case it doesn't register the first time, because the library website is trash
             oldurl = driver.current_url
             action(driver).move_to_element(nextbutton[0]).click(nextbutton[0]).perform()
+            time.sleep(1.0)
             if driver.current_url == oldurl:
                 action(driver).move_to_element(nextbutton[0]).click(nextbutton[0]).perform()
             print(driver.current_url)
             url = driver.current_url
         else:
             pass
-find_next_page()
+#find_next_page()
 
 # Solving for those journals that DO have online access.
 
@@ -206,15 +207,10 @@ def query_journals():
                 authors.append(article_information[i*3 + 1].text)
                 journal_origin.append(article_information[i*3 + 2].text)
             driver.get(url)
-            if j == 0:
-                nextbutton = driver.find_elements(By.XPATH, '//div/div[1]/div[3]/a')
-                print("first page")
-            else:
-                nextbutton = driver.find_elements(By.XPATH, '//prm-page-nav-menu/div/div/div[1]/div[3]/a/prm-icon/md-icon')
-                print("incorrect response")
-            print(nextbutton)
+            nextbutton = driver.find_elements(By.XPATH, '//prm-page-nav-menu/div/div/div[1]/div[3]/a/prm-icon/md-icon')
             oldurl = driver.current_url
             action(driver).move_to_element(nextbutton[0]).click(nextbutton[0]).perform()
+            time.sleep(1.0)
             if driver.current_url == oldurl:
                 action(driver).move_to_element(nextbutton[0]).click(nextbutton[0]).perform()
             print(driver.current_url)
@@ -233,11 +229,11 @@ def query_journals():
         #    return csvlist
 
 #query_journals()
-"""
+
 csvdf = pd.DataFrame(data=query_journals())
 print(csvdf)
 csvdf.to_csv('output.csv')
-"""
+
 
 
 # Solving for those journals that do NOT have online access. This process is significantly more complicated since it involves pulling information from a csv file.
