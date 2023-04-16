@@ -227,7 +227,7 @@ def requestables():
                 print(driver.current_url)
                 url = driver.current_url
             time.sleep(5.0)
-#requestables()
+requestables()
 
 def merge():
     titles = []
@@ -254,7 +254,7 @@ def merge():
     csvdf.to_csv('output.csv',index=False)
 
 # Solving for those journals that DO have online access.
-merge()
+#erge()
 
 def query_journals():
     titles = []
