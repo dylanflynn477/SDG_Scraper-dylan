@@ -207,7 +207,7 @@ def requestables():
             action(driver).move_to_element(csv[-1]).click(csv[-1]).perform()
             time.sleep(1.0)
             downloadbutton = driver.find_element(By.XPATH, '//prm-export-excel/div/md-content/form/div[2]/div/button/span')
-            action(driver).move_to_element(downloadbutton).click(downloadbutton).perform()
+            action(driver).move_to_element(downloadbutton).double_click(downloadbutton).perform()
             driver.get(url)
             time.sleep(5.0)
             nextbutton = driver.find_elements(By.XPATH, '//prm-page-nav-menu/div/div/div[1]/div[3]/a/prm-icon/md-icon')
@@ -227,7 +227,7 @@ def requestables():
                 print(driver.current_url)
                 url = driver.current_url
             time.sleep(5.0)
-requestables()
+#requestables()
 
 def merge():
     titles = []
@@ -241,12 +241,12 @@ def merge():
     print(len(dir_list))
     for i in range(len(dir_list)):
         excelcsv = pd.read_csv('C:/Users/dylan/OneDrive/Desktop/AIB/' + str(dir_list[i]))
-        for j in range(len(excelcsv) - 1):
-            titles.append(excelcsv.iat[j+1,0])
-            authors.append(excelcsv.iat[j+1,1])
-            keywords.append(excelcsv.iat[j+1,2])
-            journal_origin.append(excelcsv.iat[j+1,4])
-            abstracts.append(excelcsv.iat[j+1,5])
+        for j in range(len(excelcsv)):
+            titles.append(excelcsv.iat[j,0])
+            authors.append(excelcsv.iat[j,1])
+            keywords.append(excelcsv.iat[j,2])
+            journal_origin.append(excelcsv.iat[j,4])
+            abstracts.append(excelcsv.iat[j,5])
     df = {"Title" : titles, "Authors" : authors , "Keywords" : keywords, "Journal" : journal_origin, "Abstract" : abstracts}
     csvdf = pd.DataFrame(data=df)
     print(csvdf)
@@ -254,7 +254,7 @@ def merge():
     csvdf.to_csv('output.csv',index=False)
 
 # Solving for those journals that DO have online access.
-#erge()
+merge()
 
 def query_journals():
     titles = []
