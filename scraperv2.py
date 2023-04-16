@@ -5,6 +5,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 import pandas as pd
 from selenium.webdriver.common.action_chains import ActionChains as action
 import time 
+import math
 
 # Declaring global variables
 global url
@@ -113,7 +114,7 @@ def next_page():
         global url
         driver.get(url)
         nextbutton = driver.find_elements(By.XPATH, '//prm-page-nav-menu/div/div/div[1]/div[3]/a/prm-icon/md-icon')
-        resultscount = driver.find_elements(By.XPATH, '//md-input-container/md-select/md-select-value/span')
+        #resultscount = driver.find_elements(By.XPATH, '//md-input-container/md-select/md-select-value/span')
         # 34 shows the results count.
         #resultscount[34].text
         if nextbutton:
@@ -154,6 +155,57 @@ def find_next_page():
         else:
             pass
 #find_next_page()
+
+# Solving for those journals that do NOT have online access. This process is significantly more complicated since it involves pulling information from a csv file.
+def requestables():
+    titles = []
+    abstracts = []
+    keywords = []
+    authors = []
+    journal_origin = []
+    with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:
+        base_window = driver.window_handles[0]
+        print(url)
+        driver.get(url)
+        time.sleep(1.0)
+        # God awful code to figure out how many articles are in the journal
+        results = driver.find_element(By.XPATH, '//prm-search-result-page-range/div/md-input-container/md-select/md-select-value')
+        results = results.text
+        results = results.lstrip("1-10 of ")
+        results = results.rstrip(" Results")
+        results = int(results)
+        results = math.floor(results/10)
+        # End God awful code
+        for i in range(results):
+            driver.get(url)
+            #trial = driver.find_elements(By.TAG_NAME, 'prm-search-result-list')
+            articles = driver.find_elements(By.XPATH, '//prm-brief-result-container')
+            selectbutton1 = driver.find_elements(By.XPATH, '//div[2]/button[2]/prm-icon/md-icon')
+            action(driver).move_to_element(selectbutton1[0]).click(selectbutton1[0]).perform()
+            time.sleep(1.0)
+            selectbutton2 = driver.find_elements(By.XPATH, '//md-toolbar/div[1]/md-checkbox/div[1]')
+            action(driver).move_to_element(selectbutton2[0]).click(selectbutton2[0]).perform()
+            time.sleep(1.0)
+            optionsbutton = driver.find_elements(By.XPATH, '//div[4]/div[3]/button/prm-icon/md-icon')
+            action(driver).move_to_element(optionsbutton[0]).click(optionsbutton[0]).perform()
+            #print(selectbutton1)
+            #print(selectbutton2)
+            #article_information = driver.find_elements(By.XPATH, '//span/prm-highlight/span')
+            #online_access = driver.find_elements(By.XPATH, '//prm-search-result-availability-line/div/div/button')
+            time.sleep(1.0)
+            exporttoexcel = driver.find_elements(By.XPATH, '//div/li[5]/button/span/div/span')
+            action(driver).move_to_element(exporttoexcel[0]).click(exporttoexcel[0]).perform()
+            time.sleep(1.0)
+            filetype = driver.find_element(By.XPATH, '//div[1]/div[2]/md-input-container/md-select')
+            action(driver).move_to_element(filetype).click(filetype).perform()
+            time.sleep(1.0)
+            csv = driver.find_elements(By.XPATH, '//md-select-menu/md-content/md-option[2]/div[1]/span')
+            action(driver).move_to_element(csv[-1]).click(csv[-1]).perform()
+            time.sleep(1.0)
+            downloadbutton = driver.find_element(By.XPATH, '//prm-export-excel/div/md-content/form/div[2]/div/button/span')
+            action(driver).move_to_element(downloadbutton).click(downloadbutton).perform()
+            next_page()
+requestables()
 
 # Solving for those journals that DO have online access.
 
@@ -238,47 +290,21 @@ def query_journals():
 
 #query_journals()
 
-csvdf = pd.DataFrame(data=query_journals())
-print(csvdf)
-csvdf.to_csv('output.csv')
+#csvdf = pd.DataFrame(data=query_journals())
+#print(csvdf)
+#csvdf.to_csv('output.csv')
 
+#SelectButton1XPath = '/html/body/primo-explore/div/prm-explore-main/ui-view/prm-search/div/md-content/div[1]/prm-search-result-list/div/div[1]/div[2]/button[2]/prm-icon/md-icon'
+#SelectButton2XPath = '/html/body/primo-explore/div/prm-explore-main/ui-view/prm-search/div/md-content/div[1]/prm-search-result-list/div/prm-search-result-tool-bar/div/md-toolbar/div[1]/md-checkbox/div[1]'
+#SelectOptions = '/html/body/primo-explore/div/prm-explore-main/ui-view/prm-search/div/md-content/div[1]/prm-search-result-list/div/prm-search-result-tool-bar/div/md-toolbar/div[4]/div[3]/button/prm-icon/md-icon'
+#ExportToExcel = '/html/body/primo-explore/div/prm-explore-main/ui-view/prm-search/div/md-content/div[1]/prm-search-result-list/div/prm-search-result-tool-bar/div/div/div/md-content/prm-action-list/md-nav-bar/div/nav/ul/div/li[5]/button/span/div/span'    
+#FileType = '/html/body/primo-explore/div/prm-explore-main/ui-view/prm-search/div/md-content/div[1]/prm-search-result-list/div/prm-search-result-tool-bar/div/div/div/md-content/prm-action-list/prm-action-container/prm-export-excel/div/md-content/form/div[1]/div[2]/md-input-container/md-select'
+#XLSX = '/html/body/div[5]/md-select-menu/md-content/md-option[1]/div[1]/span'
+#csv = '/html/body/div[5]/md-select-menu/md-content/md-option[2]/div[1]/span'
+#csv2 = '/html/body/div[5]/md-select-menu/md-content/md-option[2]'
+#downloadbutton = '/html/body/primo-explore/div/prm-explore-main/ui-view/prm-search/div/md-content/div[1]/prm-search-result-list/div/prm-search-result-tool-bar/div/div/div/md-content/prm-action-list/prm-action-container/prm-export-excel/div/md-content/form/div[2]/div/button/span'
+#results = '/html/body/primo-explore/div[1]/prm-explore-main/ui-view/prm-search/div/md-content/div[1]/prm-search-result-list/div/div[1]/div[3]/prm-search-result-page-range/div/md-input-container/md-select/md-select-value'
 
-
-# Solving for those journals that do NOT have online access. This process is significantly more complicated since it involves pulling information from a csv file.
-def requestables():
-    titles = []
-    abstracts = []
-    keywords = []
-    authors = []
-    journal_origin = []
-    with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:
-        base_window = driver.window_handles[0]
-        print(url)
-        driver.get(url)
-        #trial = driver.find_elements(By.TAG_NAME, 'prm-search-result-list')
-        articles = driver.find_elements(By.XPATH, '//prm-brief-result-container')
-        article_information = driver.find_elements(By.XPATH, '//span/prm-highlight/span')
-        online_access = driver.find_elements(By.XPATH, '//prm-search-result-availability-line/div/div/button')
-        action(driver).move_to_element(online_access[i]).click(online_access[i]).perform()
-        time.sleep(5.0)
-        # Switching to open journal tab
-        driver.switch_to.window(driver.window_handles[1])
-        abstract = driver.find_elements(By.XPATH, '//article/div[4]/div/div[2]/div[2]/div[1]/div')
-        keyword = driver.find_elements(By.XPATH, '//div/div[6]/div/div[1]/div/text/div[2]/div/p[1]')
-        if abstract and keyword:
-            print(keyword)
-            print(keyword[0].text)
-            #print(abstract[0].text)
-            abstracts.append(abstract[0].text)
-            keywords.append(keyword[0].text)
-        else:
-            abstracts.append(None)
-            keywords.append(None)
-            print("Abstract/keywords not found")
-        driver.close()
-        driver.switch_to.window(base_window)
-    
-    
 def debug_article(i):
     titles = []
     abstracts = []
