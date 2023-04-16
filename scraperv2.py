@@ -6,6 +6,7 @@ import pandas as pd
 from selenium.webdriver.common.action_chains import ActionChains as action
 import time 
 import math
+import os
 
 # Declaring global variables
 global url
@@ -39,7 +40,7 @@ url = 'https://sju.primo.exlibrisgroup.com/discovery/search?query=issn,contains,
 ## 256 and 258 are the numbers that work when running a query. I don't know why that is, but they do.
 
 options = webdriver.ChromeOptions()
-#options.add_argument("--headless=new")
+options.add_argument("--headless=new")
 def query_journal(url):
     with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:
         driver.get(url)
@@ -178,7 +179,7 @@ def requestables():
         results = int(results)
         results = math.floor(results/10)
         # End God awful code
-        for i in range(results):
+        for i in range(results+1):
             driver.get(url)
             time.sleep(5.0)
             #trial = driver.find_elements(By.TAG_NAME, 'prm-search-result-list')
@@ -213,7 +214,7 @@ def requestables():
             #resultscount = driver.find_elements(By.XPATH, '//md-input-container/md-select/md-select-value/span')
             # 34 shows the results count.
             #resultscount[34].text
-            if nextbutton:
+            if nextbutton != []:
                 #nextbutton = driver.find_elements(By.CLASS_NAME, 'prm-icon')
                 print(nextbutton)
                 print(driver.current_url)
@@ -226,9 +227,34 @@ def requestables():
                 print(driver.current_url)
                 url = driver.current_url
             time.sleep(5.0)
-requestables()
+#requestables()
+
+def merge():
+    titles = []
+    abstracts = []
+    keywords = []
+    authors = []
+    journal_origin = []
+    filepath = 'C:/Users/dylan/OneDrive/Desktop/AIB'
+    dir_list = os.listdir(filepath)
+    print(dir_list)
+    print(len(dir_list))
+    for i in range(len(dir_list)):
+        excelcsv = pd.read_csv('C:/Users/dylan/OneDrive/Desktop/AIB/' + dir_list[i])
+        for j in range(len(excelcsv) - 1):
+            titles.append(excelcsv.iat[j+1,0])
+            authors.append(excelcsv.iat[j+1,1])
+            keywords.append(excelcsv.iat[j+1,2])
+            journal_origin.append(excelcsv.iat[j+1,4])
+            abstracts.append(excelcsv.iat[j+1,5])
+    df = {"Title" : titles, "Authors" : authors , "Keywords" : keywords, "Journal" : journal_origin, "Abstract" : abstracts}
+    csvdf = pd.DataFrame(data=df)
+    print(csvdf)
+    print(len(dir_list))
+    csvdf.to_csv('output.csv',index=False)
 
 # Solving for those journals that DO have online access.
+merge()
 
 def query_journals():
     titles = []
