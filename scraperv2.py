@@ -39,7 +39,7 @@ url = 'https://sju.primo.exlibrisgroup.com/discovery/search?query=issn,contains,
 ## 256 and 258 are the numbers that work when running a query. I don't know why that is, but they do.
 
 options = webdriver.ChromeOptions()
-options.add_argument("--headless=new")
+#options.add_argument("--headless=new")
 def query_journal(url):
     with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:
         driver.get(url)
@@ -158,6 +158,8 @@ def find_next_page():
 
 # Solving for those journals that do NOT have online access. This process is significantly more complicated since it involves pulling information from a csv file.
 def requestables():
+    test = '1938-9590'
+    url = 'https://sju.primo.exlibrisgroup.com/discovery/search?query=issn,contains,' + test + ',AND&pfilter=rtype,exact,articles,AND&tab=Everything&search_scope=MyInst_and_CI&vid=01USCIPH_INST:SJU&mode=advanced&offset=0'
     titles = []
     abstracts = []
     keywords = []
@@ -178,6 +180,7 @@ def requestables():
         # End God awful code
         for i in range(results):
             driver.get(url)
+            time.sleep(5.0)
             #trial = driver.find_elements(By.TAG_NAME, 'prm-search-result-list')
             articles = driver.find_elements(By.XPATH, '//prm-brief-result-container')
             selectbutton1 = driver.find_elements(By.XPATH, '//div[2]/button[2]/prm-icon/md-icon')
@@ -204,7 +207,25 @@ def requestables():
             time.sleep(1.0)
             downloadbutton = driver.find_element(By.XPATH, '//prm-export-excel/div/md-content/form/div[2]/div/button/span')
             action(driver).move_to_element(downloadbutton).click(downloadbutton).perform()
-            next_page()
+            driver.get(url)
+            time.sleep(5.0)
+            nextbutton = driver.find_elements(By.XPATH, '//prm-page-nav-menu/div/div/div[1]/div[3]/a/prm-icon/md-icon')
+            #resultscount = driver.find_elements(By.XPATH, '//md-input-container/md-select/md-select-value/span')
+            # 34 shows the results count.
+            #resultscount[34].text
+            if nextbutton:
+                #nextbutton = driver.find_elements(By.CLASS_NAME, 'prm-icon')
+                print(nextbutton)
+                print(driver.current_url)
+                # Double click element in case it doesn't register the first time, because the library website is trash
+                oldurl = driver.current_url
+                action(driver).move_to_element(nextbutton[0]).click(nextbutton[0]).perform()
+                time.sleep(5.0)
+                if driver.current_url == oldurl:
+                    action(driver).move_to_element(nextbutton[0]).click(nextbutton[0]).perform()
+                print(driver.current_url)
+                url = driver.current_url
+            time.sleep(5.0)
 requestables()
 
 # Solving for those journals that DO have online access.
