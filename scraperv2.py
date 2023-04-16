@@ -240,7 +240,7 @@ def merge():
     print(dir_list)
     print(len(dir_list))
     for i in range(len(dir_list)):
-        excelcsv = pd.read_csv('C:/Users/dylan/OneDrive/Desktop/AIB/' + dir_list[i])
+        excelcsv = pd.read_csv('C:/Users/dylan/OneDrive/Desktop/AIB/' + str(dir_list[i]))
         for j in range(len(excelcsv) - 1):
             titles.append(excelcsv.iat[j+1,0])
             authors.append(excelcsv.iat[j+1,1])
