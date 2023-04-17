@@ -33,7 +33,7 @@ for i in range(len(csvfile)):
     journal_issn_list.append(csvfile.iat[i,1])
     journal_eissn_list.append(csvfile.iat[i,2])
 #print(journal_list)
-test = '1938-9590'
+test = '2168-1007'
 url = 'https://sju.primo.exlibrisgroup.com/discovery/search?query=issn,contains,' + test + ',AND&pfilter=rtype,exact,articles,AND&tab=Everything&search_scope=MyInst_and_CI&vid=01USCIPH_INST:SJU&mode=advanced&offset=0'
 #url = 'https://sju.primo.exlibrisgroup.com/discovery/search?query=issn,contains,2168-1007,AND&pfilter=rtype,exact,articles,AND&tab=Everything&search_scope=MyInst_and_CI&vid=01USCIPH_INST:SJU&mode=advanced&offset=0'
 
@@ -159,7 +159,7 @@ def find_next_page():
 
 # Solving for those journals that do NOT have online access. This process is significantly more complicated since it involves pulling information from a csv file.
 def requestables():
-    test = '1938-9590'
+    test = '2168-1007'
     url = 'https://sju.primo.exlibrisgroup.com/discovery/search?query=issn,contains,' + test + ',AND&pfilter=rtype,exact,articles,AND&tab=Everything&search_scope=MyInst_and_CI&vid=01USCIPH_INST:SJU&mode=advanced&offset=0'
     titles = []
     abstracts = []
@@ -235,12 +235,12 @@ def merge():
     keywords = []
     authors = []
     journal_origin = []
-    filepath = 'C:/Users/dylan/OneDrive/Desktop/AIB'
+    filepath = 'C:/Users/dylan/OneDrive/Desktop/2168-1007'
     dir_list = os.listdir(filepath)
     print(dir_list)
     print(len(dir_list))
     for i in range(len(dir_list)):
-        excelcsv = pd.read_csv('C:/Users/dylan/OneDrive/Desktop/AIB/' + str(dir_list[i]))
+        excelcsv = pd.read_csv('C:/Users/dylan/OneDrive/Desktop/2168-1007/' + str(dir_list[i]))
         for j in range(len(excelcsv)):
             titles.append(excelcsv.iat[j,0])
             authors.append(excelcsv.iat[j,1])
