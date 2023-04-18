@@ -40,7 +40,9 @@ url = 'https://sju.primo.exlibrisgroup.com/discovery/search?query=issn,contains,
 ## 256 and 258 are the numbers that work when running a query. I don't know why that is, but they do.
 
 options = webdriver.ChromeOptions()
-options.add_argument("--headless=new")
+prefs = {"download.default_directory" : "C:/Users/dylan/Desktop/temp"}
+options.add_experimental_option("prefs", prefs)
+#options.add_argument("--headless=new")
 def query_journal(url):
     with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:
         driver.get(url)
@@ -157,10 +159,14 @@ def find_next_page():
             pass
 #find_next_page()
 
+#50 results p/p button: /html/body/div[5]/md-select-menu/md-content/md-option[3]/div[1]
+#/html/body/div[5]/md-select-menu/md-content/md-option[3]
+
 # Solving for those journals that do NOT have online access. This process is significantly more complicated since it involves pulling information from a csv file.
 def requestables():
-    test = '1869-8182'
-    url = 'https://sju.primo.exlibrisgroup.com/discovery/search?query=issn,contains,' + test + ',AND&pfilter=rtype,exact,articles,AND&tab=Everything&search_scope=MyInst_and_CI&vid=01USCIPH_INST:SJU&mode=advanced&offset=0'
+    #test = '1869-8182'
+    #url = 'https://sju.primo.exlibrisgroup.com/discovery/search?query=issn,contains,' + test + ',AND&pfilter=rtype,exact,articles,AND&tab=Everything&search_scope=MyInst_and_CI&vid=01USCIPH_INST:SJU&mode=advanced&offset=0'
+    url = 'https://sju.primo.exlibrisgroup.com/discovery/search?query=issn,contains,1869-8182,AND&pfilter=rtype,exact,articles,AND&pfilter=dr_s,exact,20180101,AND&pfilter=dr_e,exact,20221231,AND&tab=Everything&search_scope=MyInst_and_CI&vid=01USCIPH_INST:SJU&mode=advanced&offset=0'
     titles = []
     abstracts = []
     keywords = []
@@ -170,16 +176,23 @@ def requestables():
         base_window = driver.window_handles[0]
         print(url)
         driver.get(url)
-        time.sleep(1.0)
+        time.sleep(5.0)
         # God awful code to figure out how many articles are in the journal
         results = driver.find_element(By.XPATH, '//prm-search-result-page-range/div/md-input-container/md-select/md-select-value')
-        results = results.text
-        results = results.lstrip("1-10 of ")
-        results = results.rstrip(" Results")
-        results = int(results)
-        results = math.floor(results/10)
+        resultsno = results.text
+        resultsno = resultsno.lstrip("1-10 of ")
+        resultsno = resultsno.rstrip(" Results")
+        resultsno = int(resultsno)
+        resultsno = math.floor(resultsno/50)
+        print(resultsno)
+        action(driver).move_to_element(results).click(results).perform()
+        time.sleep(5.0)
+        fiftyper = driver.find_element(By.XPATH, '//div[5]/md-select-menu/md-content/md-option[3]')
+        time.sleep(5.0)
+        action(driver).move_to_element(fiftyper).click(fiftyper).perform()
+        time.sleep(5.0)
         # End God awful code
-        for i in range(results+1):
+        for i in range(10):#resultsno+1):
             driver.get(url)
             time.sleep(5.0)
             #trial = driver.find_elements(By.TAG_NAME, 'prm-search-result-list')
@@ -208,7 +221,7 @@ def requestables():
             time.sleep(1.0)
             downloadbutton = driver.find_element(By.XPATH, '//prm-export-excel/div/md-content/form/div[2]/div/button/span')
             action(driver).move_to_element(downloadbutton).double_click(downloadbutton).perform()
-            driver.get(url)
+            #driver.get(url)
             time.sleep(5.0)
             nextbutton = driver.find_elements(By.XPATH, '//prm-page-nav-menu/div/div/div[1]/div[3]/a/prm-icon/md-icon')
             #resultscount = driver.find_elements(By.XPATH, '//md-input-container/md-select/md-select-value/span')
@@ -235,7 +248,7 @@ def merge():
     keywords = []
     authors = []
     journal_origin = []
-    filepath = 'C:/Users/dylan/OneDrive/Desktop/2168-1007'
+    filepath = 'C:/Users/dylan/OneDrive/Desktop/temp'
     dir_list = os.listdir(filepath)
     print(dir_list)
     print(len(dir_list))
@@ -249,6 +262,7 @@ def merge():
             abstracts.append(excelcsv.iat[j,5])
     df = {"Title" : titles, "Authors" : authors , "Keywords" : keywords, "Journal" : journal_origin, "Abstract" : abstracts}
     csvdf = pd.DataFrame(data=df)
+    csvdf = csvdf.drop_duplicates()
     print(csvdf)
     print(len(dir_list))
     csvdf.to_csv('output.csv',index=False)
