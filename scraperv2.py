@@ -159,7 +159,7 @@ def find_next_page():
 
 # Solving for those journals that do NOT have online access. This process is significantly more complicated since it involves pulling information from a csv file.
 def requestables():
-    test = '2168-1007'
+    test = '1869-8182'
     url = 'https://sju.primo.exlibrisgroup.com/discovery/search?query=issn,contains,' + test + ',AND&pfilter=rtype,exact,articles,AND&tab=Everything&search_scope=MyInst_and_CI&vid=01USCIPH_INST:SJU&mode=advanced&offset=0'
     titles = []
     abstracts = []
