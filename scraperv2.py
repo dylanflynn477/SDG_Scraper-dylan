@@ -20,6 +20,11 @@ global abstract
 global keywords
 global csvfile
 
+startmonth = None
+endmonth = None
+startyear = None
+endyear = None
+
 csvfile = pd.read_csv('scopusjournals.csv')
 
 journal_list = []
