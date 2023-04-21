@@ -7,6 +7,7 @@ from selenium.webdriver.common.action_chains import ActionChains as action
 import time 
 import math
 import os
+import json
 
 # Declaring global variables
 global url
@@ -166,12 +167,17 @@ def find_next_page():
 
 #50 results p/p button: /html/body/div[5]/md-select-menu/md-content/md-option[3]/div[1]
 #/html/body/div[5]/md-select-menu/md-content/md-option[3]
+# Add ISSN to scraper results.
 
 # Solving for those journals that do NOT have online access. This process is significantly more complicated since it involves pulling information from a csv file.
-def requestables():
+def requestables(identifier, analysis_type, initial_year, final_year):
     #test = '1869-8182'
+    
     #url = 'https://sju.primo.exlibrisgroup.com/discovery/search?query=issn,contains,' + test + ',AND&pfilter=rtype,exact,articles,AND&tab=Everything&search_scope=MyInst_and_CI&vid=01USCIPH_INST:SJU&mode=advanced&offset=0'
-    url = 'https://sju.primo.exlibrisgroup.com/discovery/search?query=issn,contains,1869-8182,AND&pfilter=rtype,exact,articles,AND&pfilter=dr_s,exact,20180101,AND&pfilter=dr_e,exact,20221231,AND&tab=Everything&search_scope=MyInst_and_CI&vid=01USCIPH_INST:SJU&mode=advanced&offset=0'
+    if analysis_type == "journal":
+        url = 'https://sju.primo.exlibrisgroup.com/discovery/search?query=issn,contains,' + identifier + ',AND&pfilter=rtype,exact,articles,AND&pfilter=dr_s,exact,' + initial_year + '0101,AND&pfilter=dr_e,exact,'+ final_year + '1231,AND&tab=Everything&search_scope=MyInst_and_CI&vid=01USCIPH_INST:SJU&mode=advanced&offset=0'
+    else:
+        url = 'https://sju.primo.exlibrisgroup.com/discovery/search?query=any,contains,' + identifier + ',AND&pfilter=rtype,exact,articles,AND&pfilter=dr_s,exact,' + initial_year + '0101,AND&pfilter=dr_e,exact,'+ final_year + '1231,AND&tab=Everything&search_scope=MyInst_and_CI&vid=01USCIPH_INST:SJU&mode=advanced&offset=0'
     titles = []
     abstracts = []
     keywords = []
@@ -247,7 +253,7 @@ def requestables():
             time.sleep(5.0)
 #requestables()
 
-def merge():
+def merge(identifier, analysis_type):
     titles = []
     abstracts = []
     keywords = []
@@ -257,6 +263,18 @@ def merge():
     dir_list = os.listdir(filepath)
     print(dir_list)
     print(len(dir_list))
+    if analysis_type == "journal":
+        excelcsv = pd.read_csv('C:/Users/dylan/OneDrive/Desktop/2168-1007/' + str(dir_list[0]))
+        journal_title = str(excelcsv.iat[1,4]).split(',')[0]
+        result_dictionary = {"entry_type":"journal", "analysis_type":analysis_type, "journal_title":journal_title,"issn":identifier,"articles":[],"errors":[]}
+        articles = []
+        for i in range(len(dir_list)):
+            article_dictionary = {"entry_type":'article', "analysis_type":analysis_type,"journal_title":journal_title,"article_title":excelcsv.iat[i,0], "abstract":excelcsv.iat[i,5],"author_keywords":excelcsv.iat[i,2],
+                                  "publication_year":None,"publication_month":None,"affiliations":None,"institutional_affiliations":None,"author_names":excelcsv.iat[i,1],"warnings":[],"errors":[]}
+            articles.append(article_dictionary.copy())
+        result_dictionary['articles'] = articles
+        with open('results.json', 'w', encoding='UTF-8') as f:
+            json.dump(result_dictionary,f,indent=4)
     for i in range(len(dir_list)):
         excelcsv = pd.read_csv('C:/Users/dylan/OneDrive/Desktop/2168-1007/' + str(dir_list[i]))
         for j in range(len(excelcsv)):
@@ -268,12 +286,16 @@ def merge():
     df = {"Title" : titles, "Authors" : authors , "Keywords" : keywords, "Journal" : journal_origin, "Abstract" : abstracts}
     csvdf = pd.DataFrame(data=df)
     csvdf = csvdf.drop_duplicates()
+    """
+    if analysis_type == "journal":
+        result_dictionary = {"entry_type":"journal", "analysis_type":analysis_type, "journal_title":}
+    """
     print(csvdf)
     print(len(dir_list))
     csvdf.to_csv('output.csv',index=False)
 
 # Solving for those journals that DO have online access.
-merge()
+merge('2168-1007','journal')
 
 def query_journals():
     titles = []

@@ -1,0 +1,54 @@
+{
+    "entry_type": "journal",
+    "analysis_type": "journal",
+    "journal_title": "AMS review",
+    "issn": "2168-1007",
+    "articles": [
+        {
+            "entry_type": "article",
+            "analysis_type": "journal",
+            "journal_title": "AMS review",
+            "article_title": "Designing conceptual articles: four approaches",
+            "abstract": "As a powerful means of theory building, conceptual articles are increasingly called for in marketing academia. However, researchers struggle to design and write non-empirical articles because of the lack of commonly accepted templates to guide their development. The aim of this paper is to highlight methodological considerations for conceptual papers: it is argued that such papers must be grounded in a clear research design, and that the choice of theories and their role in the analysis must be explicated and justified. The paper discusses four potential templates for conceptual papers \u2013 Theory Synthesis, Theory Adaptation, Typology, and Model \u2013 and their respective aims, approach for using theories, and contribution potential. Supported by illustrative examples, these templates codify some of the tacit knowledge that underpins the design of non-empirical papers and will be of use to anyone undertaking, supervising, or reviewing conceptual research.",
+            "author_keywords": "Business and Management ;  Marketing ;  Social Sciences ;  Theory/Conceptual",
+            "publication_year": null,
+            "publication_month": null,
+            "affiliations": null,
+            "institutional_affiliations": null,
+            "author_names": "Jaakkola, Elina",
+            "warnings": [],
+            "errors": []
+        },
+        {
+            "entry_type": "article",
+            "analysis_type": "journal",
+            "journal_title": "AMS review",
+            "article_title": "A conceptual perspective on collaborative consumption",
+            "abstract": "While considerable investigative work has focused on collaborative consumption (CC) from a managerial standpoint, the concept still lacks the conceptual groundwork necessary to categorize and fully understand its scopes and limits. In this article, the authors draw upon past research to delineate the construct, discuss its dimensionalities, and propose a conceptualization of CC. The CC concept is based on six key thrusts: (1) the consumer\u2019s ability to switch sides; (2) the collaboration intensity; (3) the manner in which consumers partake in CC; (4) the transfer of ownership and use; (5) the channels used; and (6) the extended range of stakeholders in collaborative exchanges. This analytical endeavour brings to the fore the multidimensional aspect of CC, the centrality of a two-sided instead of a one-sided consumer role, and the extent to which both CC (collaborative consumption) and conventional consumption (conventional economy) are tightly interrelated.",
+            "author_keywords": "Business and Management ;  Collaboration ;  Consumption ;  Marketing ;  Social Sciences ;  Theory/Conceptual",
+            "publication_year": null,
+            "publication_month": null,
+            "affiliations": null,
+            "institutional_affiliations": null,
+            "author_names": "Ertz, Myriam ;  Durif, Fabien ;  Arcand, Manon",
+            "warnings": [],
+            "errors": []
+        },
+        {
+            "entry_type": "article",
+            "analysis_type": "journal",
+            "journal_title": "AMS review",
+            "article_title": "Toward a theory of ethical consumer intention formation: re-extending the theory of planned behavior",
+            "abstract": "What drives consumers to purchase or not purchase ethical products remains something of a puzzle for consumer behavior researchers. Existing theory\u2014particularly the widely applied theory of planned behavior (TPB)\u2014cannot fully explain ethical purchase decisions. This article contends that not only is the original TPB limited in its applicability to ethical purchasing contexts but also subsequent modifications to it have been generally unfitting. This study advances the literature by taking a different approach to recharacterize and re-extend the original components of the TPB in order to make it more relevant and effective for explaining and predicting ethical consumer decisions. This new theoretical framework of intention formation features four determinants (attitude, subjective norm, moral identity, and perceived behavior control) and a key moderator (level of confidence), and thereby possesses better explanatory and predictive abilities to understand ethical consumer decisions.",
+            "author_keywords": "Business and Management ;  Marketing ;  Social Sciences ;  Theory/Conceptual",
+            "publication_year": null,
+            "publication_month": null,
+            "affiliations": null,
+            "institutional_affiliations": null,
+            "author_names": "Sun, William",
+            "warnings": [],
+            "errors": []
+        }
+    ],
+    "errors": []
+}
