@@ -54,7 +54,7 @@ def __init__():
         submit = driver.find_element(By.XPATH, '//html/body/div[3]/form/p/input')
         click(submit)
         wait()
-        email = driver.find_element(By.XPATH, '//*[id="i0116]')
+        email = driver.find_element(By.XPATH, '//*[id="i0116"]')
         email.send_keys(username + '@sju.edu')
         next = driver.find_element(By.XPATH, '//*[@id="idSIButton9"]')
         click(next)
