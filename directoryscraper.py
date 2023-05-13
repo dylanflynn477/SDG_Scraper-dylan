@@ -4,6 +4,7 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 import pandas as pd
 from selenium.webdriver.common.action_chains import ActionChains as action
+from selenium.webdriver.common.keys import Keys
 import time 
 import math
 import os
@@ -15,7 +16,7 @@ options.add_experimental_option("prefs", prefs)
 
 url = 'https://ssb.sju.edu/pls/PRODSSB/hzgkcdir.P_DirSearchNest'
 
-def wait(seconds=10):
+def wait(seconds=5):
     time.sleep(seconds)
 
 #User login: //*[@id="UserID"]
@@ -54,26 +55,42 @@ def __init__():
         submit = driver.find_element(By.XPATH, '//html/body/div[3]/form/p/input') 
         click(submit)
         wait()
-        time.sleep(120)
-        email = driver.find_element(By.XPATH, '//*[id="i0116"]') 
-        emailbox = driver.find_element(By.PARTIAL_LINK_TEXT, 'username@sju.edu')
-        email.send_keys(username + '@sju.edu')
-        next = driver.find_element(By.XPATH, '//*[@id="idSIButton9"]')
-        click(next)
-        passwordbox = driver.find_element(By.XPATH, '//*[@id="i0118"]')
-        passwordbox.send_keys(password)
-        next = driver.find_element(By.XPATH, '//*[@id="idSIButton9"]')
-        click(next)
+        #time.sleep(120)
+        #email = driver.find_element(By.XPATH, '//*[id="i0116"]') 
+        #emailbox = driver.find_element(By.PARTIAL_LINK_TEXT, 'username@sju.edu')
+        def send(content):
+            input1 = driver.find_element(By.TAG_NAME,"input")
+            input1.send_keys(content)
+            input1.send_keys(Keys.ENTER)
+        #email.send_keys(username + '@sju.edu')
+        send(username + '@sju.edu')
         wait()
-        verifybox = driver.find_element(By.XPATH, '//*[@id="idDiv_SAOTCS_Proofs"]/div/div/div/div[2]/div')
-        click(verifybox)
+        try:
+            input1 = driver.find_element(By.TAG_NAME,"input")
+            input1.send_keys(password)
+            input1.send_keys(Keys.ENTER)
+        except:
+            input1 = driver.find_element(By.XPATH, '//*[@id="i0118"]')
+            input1.send_keys(password)
+            input1.send_keys(Keys.ENTER)
+        #//*[@id="i0118"]
+        send(password)
         wait()
-        twofacode = driver.find_element(By.XPATH, '//*[@id="idTxtBx_SAOTCC_OTC"]')
+        #time.sleep(120)
+        #passwordbox = driver.find_element(By.XPATH, '//*[@id="i0118"]')
+        #passwordbox.send_keys(password)
+        #next = driver.find_element(By.XPATH, '//*[@id="idSIButton9"]')
+        #click(next)
+        #wait()
+        #verifybox = driver.find_element(By.XPATH, '//*[@id="idDiv_SAOTCS_Proofs"]/div/div/div/div[2]/div')
+        #click(verifybox)
+        #wait()
+        #twofacode = driver.find_element(By.XPATH, '//*[@id="idTxtBx_SAOTCC_OTC"]')
         print("A verification code is required to access the directory. Enter the 6-digit code here:")
         verificationcode = input()
-        twofacode.send_keys(verificationcode)
-        submitverification = driver.find_element(By.XPATH, '//*[@id="idSubmit_SAOTCC_Continue"]')
-        click(submitverification)
+        send(verificationcode)
+        #submitverification = driver.find_element(By.XPATH, '//*[@id="idSubmit_SAOTCC_Continue"]')
+        #click(submitverification)
         wait()
         directorybutton = driver.find_element(By.XPATH, '//html/body/form/table/tbody/tr[1]/td[1]')
         click(directorybutton)
