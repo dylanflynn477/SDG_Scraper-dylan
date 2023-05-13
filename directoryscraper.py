@@ -15,7 +15,7 @@ options.add_experimental_option("prefs", prefs)
 
 url = 'https://ssb.sju.edu/pls/PRODSSB/hzgkcdir.P_DirSearchNest'
 
-def wait(seconds=5):
+def wait(seconds=10):
     time.sleep(seconds)
 
 #User login: //*[@id="UserID"]
@@ -51,10 +51,12 @@ def __init__():
         passwordbox = driver.find_element(By.XPATH, '//*[@id="PIN"]')
         usernamebox.send_keys(username)
         passwordbox.send_keys(password)
-        submit = driver.find_element(By.XPATH, '//html/body/div[3]/form/p/input')
+        submit = driver.find_element(By.XPATH, '//html/body/div[3]/form/p/input') 
         click(submit)
         wait()
-        email = driver.find_element(By.XPATH, '//*[id="i0116"]')
+        time.sleep(120)
+        email = driver.find_element(By.XPATH, '//*[id="i0116"]') 
+        emailbox = driver.find_element(By.PARTIAL_LINK_TEXT, 'username@sju.edu')
         email.send_keys(username + '@sju.edu')
         next = driver.find_element(By.XPATH, '//*[@id="idSIButton9"]')
         click(next)
@@ -85,4 +87,5 @@ def __init__():
         search = driver.find_element(By.XPATH, '//html/body/form/pre/input')
         click(search)
         wait()
+        time.sleep(60)
 __init__()
