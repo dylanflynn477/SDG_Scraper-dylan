@@ -105,14 +105,35 @@ def __init__():
         directorybutton = driver.find_element(By.XPATH, '//*[@id="block-nestmain"]/ul/li[3]/a')
         click(directorybutton)
         wait()
-        #driver.switch_to.window(driver.window_handles[1])
+        try:
+            driver.switch_to.window(driver.window_handles[1])
+        except:
+            pass
+        time.sleep(10)
         #wait()
-        time.sleep(300)
+        #time.sleep(300)
         #/html/body/form/table/tbody/tr[1]/td[1]/select
         directoryoption = driver.find_element(By.XPATH, '//html/body/form/table/tbody/tr[1]/td[1]/select')
+        directoryoption1 = driver.find_elements(By.TAG_NAME, "select")
+        directoryoption2 = driver.find_elements(By.CLASS_NAME, "dedefault")
+        directoryoption3 = driver.find_elements(By.CSS_SELECTOR, "td.dedefault")
+        #print(directoryoption)
+        #print(directoryoption1)
+        #print(directoryoption2)
         click(directoryoption)
-        student = driver.find_element(By.XPATH, '//html/body/form/table/tbody/tr[1]/td[1]/select/option[2]')
-        click(student)
+        wait()
+        time.sleep(20)
+        try:
+            student = driver.find_element(By.XPATH, '//html/body/form/table/tbody/tr[1]/td[1]/select/option[2]')
+            print(student)
+            click(student)
+        except:
+            print("XPath failure")
+            #<option value="E">Faculty / Staff
+            student = driver.find_elements(By.TAG_NAME, "option")
+            print(student)
+            time.sleep(100)
+            click(student[1])
         maxhitsbutton = driver.find_element(By.XPATH,'//html/body/form/table/tbody/tr[3]/td[1]/select')
         click(maxhitsbutton)
         onehundred = driver.find_element(By.XPATH, '//html/body/form/table/tbody/tr[3]/td[1]/select/option[4]')
