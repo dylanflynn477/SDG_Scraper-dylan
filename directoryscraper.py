@@ -36,6 +36,9 @@ def wait(seconds=5):
 
 def __init__():
     with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:
+        def text(object):
+            for i in range(len(object)):
+                print(object[i].text)
         def click(object):
             action(driver).move_to_element(object).click(object).perform()
         driver.get(url)
@@ -123,23 +126,78 @@ def __init__():
         click(directoryoption)
         wait()
         time.sleep(20)
-        try:
-            student = driver.find_element(By.XPATH, '//html/body/form/table/tbody/tr[1]/td[1]/select/option[2]')
-            print(student)
-            click(student)
-        except:
-            print("XPath failure")
-            #<option value="E">Faculty / Staff
-            student = driver.find_elements(By.TAG_NAME, "option")
-            print(student)
-            time.sleep(100)
-            click(student[1])
+        #try:
+        #    student = driver.find_element(By.XPATH, '//html/body/form/table/tbody/tr[1]/td[1]/select/option[2]')
+        #    print(student)
+        #    wait()
+        #    click(student)
+        directoryoption.send_keys(Keys.ARROW_DOWN)
+        directoryoption.send_keys(Keys.ENTER)
+        wait()
         maxhitsbutton = driver.find_element(By.XPATH,'//html/body/form/table/tbody/tr[3]/td[1]/select')
         click(maxhitsbutton)
-        onehundred = driver.find_element(By.XPATH, '//html/body/form/table/tbody/tr[3]/td[1]/select/option[4]')
-        click(onehundred)
+        maxhitsbutton.send_keys(Keys.ARROW_DOWN)
+        maxhitsbutton.send_keys(Keys.ARROW_DOWN)
+        maxhitsbutton.send_keys(Keys.ENTER)
         search = driver.find_element(By.XPATH, '//html/body/form/pre/input')
         click(search)
         wait()
-        time.sleep(600)
+        #First object
+        #/html/body/table[1]/tbody/tr[2]
+        #Last object
+        #/html/body/table[1]/tbody/tr[101]
+        name = []
+        ##Name
+        #/html/body/table[1]/tbody/tr[2]/td[1]
+        level = []
+        ##Level
+        #/html/body/table[1]/tbody/tr[2]/td[2]
+        major = []
+        ##Major
+        #/html/body/table[1]/tbody/tr[2]/td[3]
+        email = []
+        ##Email
+        #/html/body/table[1]/tbody/tr[2]/td[4]
+        for i in range(2,101):
+            try:
+                namebox = driver.find_element(By.XPATH, '/html/body/table[1]/tbody/tr[' + str(i) + ']/td[1]')
+                name.append(namebox.text)
+                levelbox = driver.find_element(By.XPATH, '/html/body/table[1]/tbody/tr[' + str(i) + ']/td[2]')
+                level.append(levelbox.text)
+                majorbox = driver.find_element(By.XPATH, '/html/body/table[1]/tbody/tr[' + str(i) + ']/td[3]')
+                major.append(majorbox.text)
+                emailbox = driver.find_element(By.XPATH, '/html/body/table[1]/tbody/tr[' + str(i) + ']/td[4]')
+                email.append(emailbox.text)
+            except:
+                print("Error grabbing pg 1 (line 180).")
+        #print(name)
+        #print(level)
+        #print(major)
+        #print(email)
+        nextbutton = driver.find_element(By.XPATH, '//html/body/table[2]/tbody/tr/td/a/b')
+        click(nextbutton)
+        wait()
+        def query_all():
+            try:
+                for i in range(2,101):
+                    namebox = driver.find_element(By.XPATH, '/html/body/table[1]/tbody/tr[' + str(i) + ']/td[1]')
+                    name.append(namebox.text)
+                    levelbox = driver.find_element(By.XPATH, '/html/body/table[1]/tbody/tr[' + str(i) + ']/td[2]')
+                    level.append(levelbox.text)
+                    majorbox = driver.find_element(By.XPATH, '/html/body/table[1]/tbody/tr[' + str(i) + ']/td[3]')
+                    major.append(majorbox.text)
+                    emailbox = driver.find_element(By.XPATH, '/html/body/table[1]/tbody/tr[' + str(i) + ']/td[4]')
+                    email.append(emailbox.text)
+                nextbutton = driver.find_element(By.XPATH, '/html/body/table[2]/tbody/tr/td[3]/a/b')
+                click(nextbutton)
+                wait(10)        
+            except:
+                print("List complete.")
+                directory = {"Name": name, "Level": level, "Major": major, "Email": email}
+                df = pd.DataFrame(data=directory)
+                df.to_csv('directory.csv', index=False)
+                quit()
+            query_all()
+        query_all()
+    return name, level, major, email
 __init__()
